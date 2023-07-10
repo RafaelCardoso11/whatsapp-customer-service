@@ -1,0 +1,8 @@
+{
+  "watch": ["src"],
+  "ext": ".ts",
+  "exec": "sucrase-node src/app.ts",
+  "events": {
+    "restart": "rm tokens/fones-belem/SingletonLock"
+  }
+} 

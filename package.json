@@ -1,0 +1,23 @@
+{
+  "name": "whatsapp-customer-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/lodash": "^4.14.195",
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "venom-bot": "^5.0.11"
+  },
+  "scripts": {
+    "dev": "nodemon src/app.ts"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
+    "nodemon": "^2.0.22",
+    "sucrase": "^3.32.0",
+    "typescript": "^5.1.6"
+  }
+}

@@ -20,29 +20,46 @@ export class MessageService {
   constructor(private readonly client: Whatsapp) {
     this.sender = new Sender(client);
   }
-  startSupport(ID_CLIENT: string) {
-    return this.client.sendText(
-      ID_CLIENT,
-      `
-      *Olá, tudo bem? ^-^*
-      Agradecemos o seu Contato. Em breve você será atendido por um de nossos consultores.
+  startSupport(idClient: string) {
+    this.client.sendText(
+      idClient,
+      `Olá, tudo bem? 😊\n` +
+        `Em breve você será atendido por um de nossos consultores.`
+    );
 
-      *Fones Belém*
-      `
+    this.client.sendText(
+      idClient,
+      `Para agilizar o nosso atendimento informe o seu nome e dúvida/pedido que já retornaremos.`
     );
   }
 
   sendMessageToClient(idClient: string, message: Message): void {
-    const formattedMessage = `*Consultor ${message.sender.pushname}*\n${message.content}`;
+    const {
+      sender: { pushname: nameWhatsappConsultant },
+      content,
+    } = message;
+
+    const formattedMessage = `*Consultor ${nameWhatsappConsultant}*\n${content}`;
+
     this.sender.sendText(idClient, formattedMessage);
   }
 
   sendMessageToConsultant(message: Message): void {
-    // Lógica para enviar mensagem ao consultor
+    const {
+      sender: {
+        name: nameSaveClient,
+        pushname: nameWhatsappClient,
+        id: idClient,
+      },
+    } = message;
+
+    const dateCurrent = new Date().toLocaleString("pt-BR");
+
     const formattedMessage =
-      `*Nome: ${message.sender.name} / ${message.sender.pushname} / ${message.sender.id}*\n` +
-      `Data/Hora: ${message.timestamp.toLocaleString("pt-BR")}\n` +
+      `*Nome: ${nameSaveClient} / ${nameWhatsappClient} / ${idClient}*\n` +
+      `Data/Hora: ${dateCurrent}\n` +
       `Mensagem: ${message.content}`;
+
     this.sender.sendText(consultants[0].id, formattedMessage);
   }
 }

@@ -1,3 +1,4 @@
+import { extractNumbersToString } from "../../../pipes/extractNumbersToString";
 import { ICommand } from "./interfaces/command";
 
 export class GenerateWhatsappLinkCommandCommand implements ICommand {
@@ -11,7 +12,7 @@ export class GenerateWhatsappLinkCommandCommand implements ICommand {
     }
   }
   getNumberClient(idClient: string): string {
-    const numbersOnly = idClient.replace(/\D/g, "");
+    const numbersOnly = extractNumbersToString(idClient)
     return numbersOnly;
   }
 }

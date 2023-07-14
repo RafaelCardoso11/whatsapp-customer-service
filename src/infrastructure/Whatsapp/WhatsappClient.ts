@@ -24,8 +24,8 @@ export class WhatsAppClient {
   private client: Whatsapp;
   private commandsUseCase: CommandsUseCase;
 
-  constructor(private readonly CommandsUseCase: CommandsUseCase) {
-    this.commandsUseCase = CommandsUseCase;
+  constructor(private readonly commands: CommandsUseCase) {
+    this.commandsUseCase = commands;
   }
 
   async initialize() {
@@ -80,7 +80,7 @@ export class WhatsAppClient {
     if (isCommand && isConsultant) {
       this.client.sendText(
         id,
-        this.commandsUseCase.executeCommand(idClient, message.content,)
+        this.commandsUseCase.executeCommand(idClient, message.content)
       );
     }
   }

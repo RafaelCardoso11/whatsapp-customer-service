@@ -1,5 +1,6 @@
 import { Message, Whatsapp } from "venom-bot";
 import { Sender } from "../../infrastructure/Whatsapp/Sender";
+import { extractNumbersToString } from "../../pipes/extractNumbersToString";
 
 interface IConsultant {
   id: string;
@@ -20,17 +21,19 @@ export class MessageService {
   constructor(private readonly client: Whatsapp) {
     this.sender = new Sender(client);
   }
-  startSupport(idClient: string) {
-    this.client.sendText(
+  async startSupport(idClient: string) {
+    await this.client.sendText(
       idClient,
       `Olá, tudo bem? 😊\n` +
         `Em breve você será atendido por um de nossos consultores.`
     );
 
-    this.client.sendText(
+    await this.client.sendText(
       idClient,
       `Para agilizar o nosso atendimento informe o seu nome e dúvida/pedido que já retornaremos.`
     );
+
+    return true;
   }
 
   sendMessageToClient(idClient: string, message: Message): void {
@@ -54,9 +57,10 @@ export class MessageService {
     } = message;
 
     const dateCurrent = new Date().toLocaleString("pt-BR");
+    const numberClient = extractNumbersToString(idClient)
 
     const formattedMessage =
-      `*Nome: ${nameSaveClient} / ${nameWhatsappClient} / ${idClient}*\n` +
+      `*Nome: ${nameSaveClient} / ${nameWhatsappClient} / ${numberClient}*\n` +
       `Data/Hora: ${dateCurrent}\n` +
       `Mensagem: ${message.content}`;
 

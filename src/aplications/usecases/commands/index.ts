@@ -1,3 +1,4 @@
+import { Consultant } from "../../../infrastructure/database/entities/Consultant";
 import { ChangeConsultantCommand } from "./ChangeConsultantUseCase";
 import { CloseSessionCommand } from "./CloseSessionCommandUseCase";
 import { GenerateWhatsappLinkCommandCommand } from "./GenerateWhatsappLinkCommandUseCase";
@@ -21,14 +22,17 @@ export class CommandsUseCase {
     );
   }
 
-  private registerCommand(name: string, command: ICommand): void {
+  private async registerCommand(
+    name: string,
+    command: ICommand
+  ): Promise<void> {
     this.commands.set(name, command);
   }
 
-  executeCommand(idClient: string, name: string): string {
+  async executeCommand(consultant: Consultant, name: string): Promise<string> {
     const command = this.commands.get(name);
     if (command) {
-      return command.execute(idClient);
+      return await command.execute(consultant);
     } else {
       return `*Comando não reconhecido: ${name}.* _Listar comandos: #/comandos_`;
     }

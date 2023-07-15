@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
-import { ConsultantRepository } from "../repositories/Consultant";
-import { Consultant } from "../entities/Consultant";
+import { ConsultantRepository } from "../infra/repositories/Consultant";
+import { Consultant } from "../core/entities/Consultant";
 
 export class ConsultantController {
   private consultantRepository: ConsultantRepository;

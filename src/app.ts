@@ -1,6 +1,6 @@
-import { CommandsUseCase } from "./aplications/usecases/commands";
-import { WhatsAppClient } from "./infrastructure/Whatsapp/WhatsappClient";
-import { main } from "./infrastructure/database/connection/conn";
+import { CommandsUseCase } from "./core/usecases/commands";
+import { WhatsAppClient } from "./infra/venom/WhatsappClient";
+import { main } from "./infra/odm/mongoose/conn";
 import express from "express";
 import routers from "./routes";
 

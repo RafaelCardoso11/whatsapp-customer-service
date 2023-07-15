@@ -11,6 +11,11 @@ Dado que o consultor tenha atendido um cliente
 Quando o consultor enviar o comando "#/waLinkCliente"
 Então o consultor deverá receber um link que redireciona para o Whatsapp do Cliente
 
+Cenário: Consultor poderá passar o atendimento do cliente para outro consultor
+Dado que o consultor receba um novo atendimento
+Quando o consultor enviar o comando "#/mudarConsultor"
+Então o seu atendimento é passado para outro atendente
+
 Cenário: Consultor poderá visualizar os comandos disponíveis
 Quando o consultor solicitar a lista de comandos disponíveis através do comando "#/comandos"
 Então uma lista contendo os comandos disponíveis deve ser exibida

@@ -1,25 +1,11 @@
 import { Message, Whatsapp, create } from "venom-bot";
-import { isEmpty } from "lodash";
 import { MessageService } from "../../aplications/services/MessageService";
 import { CommandsUseCase } from "../../aplications/usecases/commands";
+import { ConsultantRepository } from "../database/repositories/Consultant";
+import { Consultant } from "../database/entities/Consultant";
+import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";
 
-export let idClient = "";
-
-interface IConsultant {
-  id: string;
-  name: string;
-  idClientCurrent: string;
-}
-
-const consultantsDataBase: IConsultant[] = [
-  {
-    id: "559196320038@c.us",
-    name: "Rafael Cardoso",
-    idClientCurrent: "",
-  },
-];
-
-const chatIDStatus = "status@broadcast";
+const CHAT_ID_STATUS = "status@broadcast";
 export class WhatsAppClient {
   private client: Whatsapp;
   private commandsUseCase: CommandsUseCase;
@@ -34,54 +20,100 @@ export class WhatsAppClient {
         session: "fones-belem",
       });
       this.client = client;
+
       this.configureMessageHandling();
     } catch (error) {
       console.error("Error during application bootstrap", error);
     }
   }
 
-  private configureMessageHandling(): void {
-    this.client.onMessage((message) => {
-      const notIsStatus = message.chatId !== chatIDStatus;
+  private configureMessageHandling() {
+    this.client.onMessage((message: Message): void => {
+      const notIsStatus = message.chatId !== CHAT_ID_STATUS;
 
-      const isRebeca = message.sender.id === "559181702882@c.us";
-
-      const consultants = consultantsDataBase.map(({ id }) => id);
-      const isConsultant = consultants.includes(message.sender.id);
-      if ((notIsStatus && isRebeca) || isConsultant)
+      if (notIsStatus) {
         this.handleReceivedMessage(message);
+      }
     });
   }
+
   private async handleReceivedMessage(message: Message) {
     const {
-      sender: { id },
-      chatId,
+      sender: { id: idTelephone },
     } = message;
-    const consultants = consultantsDataBase.map(({ id }) => id);
 
     const sender = new MessageService(this.client);
-    const isConsultant = consultants.includes(id);
-    const isNewSupport = isEmpty(idClient) && id === chatId && !isConsultant;
+    const consultants = await this.fetchConsultants();
 
-    const initWithCommand = /^#\//;
-    const isCommand = initWithCommand.test(message.content);
+    if (consultants) {
+      const telephoneClient = extractTelephoneForIdTelephone(idTelephone);
+      const isConsultant = this.isConsultant(telephoneClient, consultants);
 
-    if (isNewSupport) {
-      if (await sender.startSupport(id)) {
-        sender.sendMessageToConsultant(message);
-        idClient = id;
-      } else {
-        console.error("Support not initialized");
-      }
-    }
-    if (isConsultant && idClient && !isCommand) {
-      sender.sendMessageToClient(idClient, message);
-    }
-    if (isCommand && isConsultant) {
-      this.client.sendText(
-        id,
-        this.commandsUseCase.executeCommand(idClient, message.content)
+      const consultantWithClientCurrent = consultants.find(
+        ({ clientCurrent }) => clientCurrent.number === telephoneClient
       );
+
+      const isNewSupport = !consultantWithClientCurrent;
+
+      if (isConsultant) {
+        const initWithCommand = /^#\//;
+        const isCommand = initWithCommand.test(message.content);
+
+        if (isCommand) {
+          const command = await this.commandsUseCase.executeCommand(
+            isConsultant,
+            message.content
+          );
+          this.client.sendText(idTelephone, command);
+        } else {
+          const consultantCurrent = consultants.find(
+            ({ number }) => number === telephoneClient
+          );
+          if (consultantCurrent) {
+            sender.sendMessageToClient(
+              consultantCurrent.clientCurrent._id,
+              message
+            );
+          } else {
+            this.client.sendText(
+              idTelephone,
+              "_Você não está em um atendimento!_"
+            );
+          }
+        }
+      } else {
+        if (isNewSupport) {
+          if (await sender.startSupport(idTelephone)) {
+            sender.sendMessageToConsultant(message);
+          } else {
+            console.error("Support not initialized");
+          }
+        } else {
+          sender.sendMessageToConsultant(message);
+        }
+      }
+    } else {
+      console.log("Nenhum consultor cadastrado");
     }
+  }
+
+  private async fetchConsultants() {
+    try {
+      const consultantRepository = new ConsultantRepository();
+      const consultants = await consultantRepository.getAll();
+      return consultants;
+    } catch (error) {
+      console.error("Error updating consultants:", error);
+    }
+  }
+  private isConsultant(
+    telephoneClient: string,
+    consultants: Consultant[]
+  ): Consultant | undefined {
+    const consultant = consultants.find(
+      ({ number }) => number === telephoneClient
+    );
+
+    return consultant;
   }
 }

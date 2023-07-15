@@ -1,6 +1,6 @@
 import { Message, Whatsapp, create } from "venom-bot";
-import { MessageService } from "../../aplications/services/MessageService";
-import { CommandsUseCase } from "../../aplications/usecases/commands";
+import { MessageService } from "../../core/services/MessageService";
+import { CommandsUseCase } from "../../core/usecases/commands";
 import { ConsultantRepository } from "../database/repositories/Consultant";
 import { Consultant } from "../database/entities/Consultant";
 import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";

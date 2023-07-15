@@ -1,8 +1,8 @@
 import { Message, Whatsapp } from "venom-bot";
-import { Sender } from "../../infrastructure/Whatsapp/Sender";
+import { Sender } from "../../infra/Whatsapp/Sender";
 import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";
-import { Consultant } from "../../infrastructure/database/entities/Consultant";
-import { ConsultantRepository } from "../../infrastructure/database/repositories/Consultant";
+import { Consultant } from "../../infra/database/entities/Consultant";
+import { ConsultantRepository } from "../../infra/database/repositories/Consultant";
 import { telephoneToIdTelephone } from "../../pipes/telephoneToIdTelephone";
 
 export class MessageService {

@@ -1,4 +1,4 @@
-import { Consultant } from "../../../infrastructure/database/entities/Consultant";
+import { Consultant } from "../../../infra/database/entities/Consultant";
 import { ChangeConsultantCommand } from "./ChangeConsultantUseCase";
 import { CloseSessionCommand } from "./CloseSessionCommandUseCase";
 import { GenerateWhatsappLinkCommandCommand } from "./GenerateWhatsappLinkCommandUseCase";

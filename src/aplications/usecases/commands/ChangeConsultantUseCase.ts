@@ -1,4 +1,4 @@
-import { Consultant } from "../../../infrastructure/database/entities/Consultant";
+import { Consultant } from "../../../infra/database/entities/Consultant";
 import { ICommand } from "./interfaces/command";
 
 export class ChangeConsultantCommand implements ICommand {

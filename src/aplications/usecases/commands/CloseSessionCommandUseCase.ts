@@ -1,6 +1,6 @@
-import { Consultant } from "../../../infrastructure/database/entities/Consultant";
-import { AttendimentRepository } from "../../../infrastructure/database/repositories/Attendiment";
-import { ConsultantRepository } from "../../../infrastructure/database/repositories/Consultant";
+import { Consultant } from "../../../infra/database/entities/Consultant";
+import { AttendimentRepository } from "../../../infra/database/repositories/Attendiment";
+import { ConsultantRepository } from "../../../infra/database/repositories/Consultant";
 import { ICommand } from "./interfaces/command";
 
 export class CloseSessionCommand implements ICommand {

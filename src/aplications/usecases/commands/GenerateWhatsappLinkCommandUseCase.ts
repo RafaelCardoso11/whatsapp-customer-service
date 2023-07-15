@@ -1,18 +1,14 @@
-import { extractNumbersToString } from "../../../pipes/extractNumbersToString";
+import { Consultant } from "../../../infrastructure/database/entities/Consultant";
 import { ICommand } from "./interfaces/command";
 
 export class GenerateWhatsappLinkCommandCommand implements ICommand {
-  execute(idClient: string): string {
-    if (idClient) {
-      const numberClient = this.getNumberClient(idClient);
+  execute(consultant: Consultant): string {
+    if (consultant.clientCurrent._id) {
+      const numberClient = consultant.clientCurrent.number;
 
       return `*APENAS POR NECESSIDADE* : https://api.whatsapp.com/send?phone=${numberClient}`;
     } else {
       return "Nenhum cliente em seu CHAT";
     }
-  }
-  getNumberClient(idClient: string): string {
-    const numbersOnly = extractNumbersToString(idClient)
-    return numbersOnly;
   }
 }

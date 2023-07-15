@@ -1,5 +1,5 @@
-import { ConsultantModel } from "../schemas/ConsultantSchema";
-import { Consultant } from "../entities/Consultant";
+import { ConsultantModel } from "../../core/schemas/ConsultantSchema";
+import { Consultant } from "../../core/entities/Consultant";
 
 class ConsultantRepository {
   async getById(id: string): Promise<Consultant | null> {

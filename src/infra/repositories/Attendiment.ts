@@ -1,5 +1,5 @@
-import { Attendiment } from "../entities/Attendiment";
-import { AttendimentModel } from "../schemas/AttendimentSchema";
+import { Attendiment } from "../../core/entities/Attendiment";
+import { AttendimentModel } from "../../core/schemas/AttendimentSchema";
 
 
 

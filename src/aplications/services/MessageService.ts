@@ -1,19 +1,9 @@
 import { Message, Whatsapp } from "venom-bot";
 import { Sender } from "../../infrastructure/Whatsapp/Sender";
-import { extractNumbersToString } from "../../pipes/extractNumbersToString";
-
-interface IConsultant {
-  id: string;
-  name: string;
-  idClientCurrent: string;
-}
-const consultants: IConsultant[] = [
-  {
-    id: "559196320038@c.us",
-    name: "Rafael Cardoso",
-    idClientCurrent: "",
-  },
-];
+import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";
+import { Consultant } from "../../infrastructure/database/entities/Consultant";
+import { ConsultantRepository } from "../../infrastructure/database/repositories/Consultant";
+import { telephoneToIdTelephone } from "../../pipes/telephoneToIdTelephone";
 
 export class MessageService {
   private sender: Sender;
@@ -47,7 +37,7 @@ export class MessageService {
     this.sender.sendText(idClient, formattedMessage);
   }
 
-  sendMessageToConsultant(message: Message): void {
+  async sendMessageToConsultant(message: Message): Promise<void> {
     const {
       sender: {
         name: nameSaveClient,
@@ -57,13 +47,71 @@ export class MessageService {
     } = message;
 
     const dateCurrent = new Date().toLocaleString("pt-BR");
-    const numberClient = extractNumbersToString(idClient)
+    const numberClient = extractTelephoneForIdTelephone(idClient);
 
     const formattedMessage =
-      `*Nome: ${nameSaveClient} / ${nameWhatsappClient} / ${numberClient}*\n` +
+      `*Nome: ${nameSaveClient} / ${nameWhatsappClient}*\n` +
       `Data/Hora: ${dateCurrent}\n` +
       `Mensagem: ${message.content}`;
 
-    this.sender.sendText(consultants[0].id, formattedMessage);
+    const clientCurrent = {
+      _id: idClient,
+      name: nameSaveClient,
+      number: numberClient,
+    };
+    const consultant = await this.handleConsultantCurrent(clientCurrent);
+    const idConsultant = telephoneToIdTelephone(consultant.number)
+    this.sender.sendText(idConsultant, formattedMessage);
   }
+  private async handleConsultantCurrent(
+    clientCurrent: IClientCurrent
+  ): Promise<Consultant> {
+    const consultantRepository = new ConsultantRepository();
+    const consultants = await consultantRepository.getAll();
+
+    const consultantCurrent = consultants.find(
+      (consultant) => consultant.clientCurrent._id === clientCurrent._id
+    );
+
+    if (consultantCurrent) {
+      return consultantCurrent;
+    }
+
+    const newConsultant = await this.handleConsultantAvailable(
+      consultants,
+      clientCurrent
+    );
+
+    return newConsultant as Consultant;
+  }
+  private async handleConsultantAvailable(
+    consultants: Consultant[],
+    clientCurrent: IClientCurrent
+  ): Promise<Consultant | string> {
+    const consultantRepository = new ConsultantRepository();
+
+    const consultantAvaliable = consultants.find(
+      (consultant) => consultant.clientCurrent._id === ""
+    );
+
+    if (consultantAvaliable) {
+      const consultantWithClient =
+        await consultantRepository.updateClientCurrent(
+          consultantAvaliable._id,
+          clientCurrent
+        );
+      if (consultantWithClient) {
+        return consultantWithClient;
+      }
+      console.log("Não cadastrou o cliente");
+    }
+    console.log("Nenhum consultor disponível");
+    return "Nenhum consultor disponível";
+  }
+}
+
+interface IClientCurrent {
+  _id: string;
+  name: string;
+  number: string;
 }

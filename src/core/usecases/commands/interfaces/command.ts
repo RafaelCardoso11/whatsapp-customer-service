@@ -1,4 +1,5 @@
-import { Consultant } from "../../../../infra/database/entities/Consultant";
+import { Consultant } from "../../../entities/Consultant";
+
 
 export interface ICommand {
   execute(consultant?: Consultant): Promise<string> | string;

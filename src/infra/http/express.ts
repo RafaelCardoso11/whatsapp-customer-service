@@ -1,13 +1,12 @@
 import express from "express";
-import routers from "../../routes";
+import routers from "./routes";
 
-import pinoHttp from "pino-http";
-import logger from "../logger/pino";
+import { logger } from "../logger/logger";
+
 const server = express();
 
 server.use(express.json());
 server.use(routers);
-server.use(pinoHttp({ logger }));
 
 const PORT = process.env.SERVER_PORT;
 

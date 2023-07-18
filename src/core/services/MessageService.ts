@@ -1,9 +1,10 @@
 import { Message, Whatsapp } from "venom-bot";
 import { Sender } from "../../infra/venom/Sender";
 import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";
-import { Consultant } from "../../infra/database/entities/Consultant";
+
 import { ConsultantRepository } from "../../infra/repositories/Consultant";
 import { telephoneToIdTelephone } from "../../pipes/telephoneToIdTelephone";
+import { Consultant } from "../entities/Consultant";
 
 export class MessageService {
   private sender: Sender;

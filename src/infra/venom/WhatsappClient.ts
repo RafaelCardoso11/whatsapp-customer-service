@@ -2,8 +2,9 @@ import { Message, Whatsapp, create } from "venom-bot";
 import { MessageService } from "../../core/services/MessageService";
 import { CommandsUseCase } from "../../core/usecases/commands";
 import { ConsultantRepository } from "../repositories/Consultant";
-import { Consultant } from "../database/entities/Consultant";
+
 import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";
+import { Consultant } from "../../core/entities/Consultant";
 
 const CHAT_ID_STATUS = "status@broadcast";
 export class WhatsAppClient {

@@ -1,5 +1,6 @@
 import express from "express";
-import { ConsultantController } from "./infra/database/controllers/Consultant";
+import { ConsultantController } from "./controllers/Consultant";
+
 
 const routers = express.Router();
 const consultantController = new ConsultantController();

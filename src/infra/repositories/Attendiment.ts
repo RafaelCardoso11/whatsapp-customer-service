@@ -1,3 +1,4 @@
+import { logger } from "../logger/logger";
 import { Attendiment } from "../../core/entities/Attendiment";
 import { AttendimentModel } from "../../core/schemas/AttendimentSchema";
 
@@ -22,7 +23,7 @@ class AttendimentRepository {
         })
       ).toJSON() as Attendiment;
 
-      console.log("Created attendiment number #", numberIncremented);
+      logger.info("Created attendiment number #", numberIncremented);
       return { ...created, number: numberIncremented };
     } catch (error) {
       return { number: 0, error };

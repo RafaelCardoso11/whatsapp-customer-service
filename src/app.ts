@@ -1,9 +1,12 @@
-import { CommandsUseCase } from "./core/usecases/commands";
-import "./infra/http/express";
+import dotenv from "dotenv";
+dotenv.config();
 
+import { CommandsUseCase } from "./core/usecases/commands";
 import { WhatsAppClient } from "./infra/venom/WhatsappClient";
-import mongoURI from "./infra/database/mongoDB";
 import connectMongoDB from "./infra/odm/mongoose";
+import mongoURI from "./infra/database/mongoDB";
+import "./infra/http/express";
+import { logger } from "./infra/logger/logger";
 
 async function startApp() {
   try {
@@ -14,7 +17,7 @@ async function startApp() {
 
     app.initialize();
   } catch (error) {
-    console.error("Error to initialize App:", error);
+    logger.error("Error to initialize App:", error);
   }
 }
 

@@ -5,6 +5,7 @@ import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForI
 import { ConsultantRepository } from "../../infra/repositories/Consultant";
 import { telephoneToIdTelephone } from "../../pipes/telephoneToIdTelephone";
 import { Consultant } from "../entities/Consultant";
+import { logger } from "../../infra/logger/logger";
 
 export class MessageService {
   private sender: Sender;
@@ -104,9 +105,9 @@ export class MessageService {
       if (consultantWithClient) {
         return consultantWithClient;
       }
-      console.log("Não cadastrou o cliente");
+      logger.info("Não cadastrou o cliente");
     }
-    console.log("Nenhum consultor disponível");
+    logger.info("Nenhum consultor disponível");
     return "Nenhum consultor disponível";
   }
 }

@@ -1,5 +1,6 @@
 import { ConsultantModel } from "../../core/schemas/ConsultantSchema";
 import { Consultant } from "../../core/entities/Consultant";
+import { logger } from "../logger/logger";
 
 class ConsultantRepository {
   async getById(id: string): Promise<Consultant | null> {
@@ -51,7 +52,7 @@ class ConsultantRepository {
       this.updateClientCurrent(idConsultant, clientCurrent);
       return newConsultant;
     } else {
-      console.log("Nenhum consultor disponível");
+      logger.info("Nenhum consultor disponível");
     }
     return consultantWithClientEmpty;
   }

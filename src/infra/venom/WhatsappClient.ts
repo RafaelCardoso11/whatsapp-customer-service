@@ -5,6 +5,7 @@ import { ConsultantRepository } from "../repositories/Consultant";
 
 import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";
 import { Consultant } from "../../core/entities/Consultant";
+import { logger } from "../logger/logger";
 
 const CHAT_ID_STATUS = "status@broadcast";
 export class WhatsAppClient {
@@ -24,7 +25,7 @@ export class WhatsAppClient {
 
       this.configureMessageHandling();
     } catch (error) {
-      console.error("Error during application bootstrap", error);
+      logger.error("Error during application bootstrap", error);
     }
   }
 
@@ -87,14 +88,14 @@ export class WhatsAppClient {
           if (await sender.startSupport(idTelephone)) {
             sender.sendMessageToConsultant(message);
           } else {
-            console.error("Support not initialized");
+            logger.error("Support not initialized");
           }
         } else {
           sender.sendMessageToConsultant(message);
         }
       }
     } else {
-      console.log("Nenhum consultor cadastrado");
+      logger.info("Nenhum consultor cadastrado");
     }
   }
 
@@ -104,7 +105,7 @@ export class WhatsAppClient {
       const consultants = await consultantRepository.getAll();
       return consultants;
     } catch (error) {
-      console.error("Error updating consultants:", error);
+      logger.error("Error updating consultants:", error);
     }
   }
   private isConsultant(

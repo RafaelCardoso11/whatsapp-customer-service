@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 const config = {
   username: process.env.MONGODB_USERNAME,
   password: String(process.env.MONGODB_PASSWORD),

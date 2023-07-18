@@ -1,9 +1,9 @@
 import { Message, Whatsapp } from "venom-bot";
 import { Sender } from "../../infra/venom/Sender";
-import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";
+import { extractTelephoneForIdTelephone } from "../../helpers/extractTelephoneForIdTelephone";
 
 import { ConsultantRepository } from "../../infra/repositories/Consultant";
-import { telephoneToIdTelephone } from "../../pipes/telephoneToIdTelephone";
+import { telephoneToIdTelephone } from "../../helpers/telephoneToIdTelephone";
 import { Consultant } from "../entities/Consultant";
 import { logger } from "../../infra/logger/logger";
 

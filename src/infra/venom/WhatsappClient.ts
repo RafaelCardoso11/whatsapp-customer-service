@@ -3,7 +3,7 @@ import { MessageService } from "../../core/services/MessageService";
 import { CommandsUseCase } from "../../core/usecases/commands";
 import { ConsultantRepository } from "../repositories/Consultant";
 
-import { extractTelephoneForIdTelephone } from "../../pipes/extractTelephoneForIdTelephone";
+import { extractTelephoneForIdTelephone } from "../../helpers/extractTelephoneForIdTelephone";
 import { Consultant } from "../../core/entities/Consultant";
 import { logger } from "../logger/logger";
 

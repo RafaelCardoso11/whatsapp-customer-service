@@ -1,6 +1,6 @@
 import Odm from "../../infra/odm/odm";
 
-const AttendimentSchema = Odm.schema({
+const AttendimentSchema = Odm.createSchema({
   _id: { type: Odm.Schema.Types.ObjectId, auto: true },
   attendimentStars: { type: "number", required: true },
   avaliation: { type: "object", required: true },
@@ -10,4 +10,4 @@ const AttendimentSchema = Odm.schema({
   date: { type: "date", required: true },
 });
 
-export const AttendimentModel = Odm.model("attendiments", AttendimentSchema);
+export const AttendimentModel = Odm.createModel("attendiments", AttendimentSchema);

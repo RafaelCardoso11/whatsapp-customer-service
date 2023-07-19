@@ -1,6 +1,6 @@
 import Odm from "../../infra/odm/odm";
 
-const ConsultantSchema = Odm.schema({
+const ConsultantSchema = Odm.createSchema({
   _id: { type: Odm.Schema.Types.ObjectId, auto: true },
   name: {
     type: "string",
@@ -16,4 +16,4 @@ const ConsultantSchema = Odm.schema({
     number: { type: "string", required: false, default: "" },
   },
 });
-export const ConsultantModel = Odm.model("Consultants", ConsultantSchema);
+export const ConsultantModel = Odm.createModel("Consultants", ConsultantSchema);

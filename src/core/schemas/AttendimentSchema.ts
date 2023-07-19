@@ -1,7 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import Odm from "../../infra/odm/odm";
 
-const AttendimentSchema: Schema = new mongoose.Schema({
-  _id: { type: Schema.Types.ObjectId, auto: true },
+const AttendimentSchema = Odm.schema({
+  _id: { type: Odm.Schema.Types.ObjectId, auto: true },
   attendimentStars: { type: "number", required: true },
   avaliation: { type: "object", required: true },
   consultant: { type: "object", required: true },
@@ -10,8 +10,4 @@ const AttendimentSchema: Schema = new mongoose.Schema({
   date: { type: "date", required: true },
 });
 
-export const AttendimentModel = mongoose.model(
-  "attendiments",
-  AttendimentSchema
-);
-
+export const AttendimentModel = Odm.model("attendiments", AttendimentSchema);

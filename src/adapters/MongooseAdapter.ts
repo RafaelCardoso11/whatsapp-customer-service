@@ -1,9 +1,18 @@
-import mongoose, { ConnectOptions, Model, Schema } from "mongoose";
+import mongoose, {
+  ConnectOptions,
+  InferSchemaType,
+  Model,
+  Schema,
+  SchemaDefinition,
+} from "mongoose";
 import { IOdm } from "./interfaces/odm";
 import { logger } from "../infra/logger/logger";
 
-class mongooseAdapter implements IOdm {
-  async connection(uri: string, options?: ConnectOptions): Promise<void> {
+class mongooseAdapter implements IOdm<Schema, Model<any>> {
+  async connection<Options extends ConnectOptions>(
+    uri: string,
+    options?: Options
+  ): Promise<void> {
     try {
       await mongoose.connect(uri, options);
       logger.info("Connected to MongoDB");
@@ -11,14 +20,18 @@ class mongooseAdapter implements IOdm {
       logger.error(error);
     }
   }
-
-  schema<Schema = typeof Schema>(args: mongoose.DefaultSchemaOptions): Schema {
-    return new mongoose.Schema(args) as Schema;
+  createSchema<args extends SchemaDefinition, SchemaReturn = typeof Schema>(
+    schemaDefinition: args
+  ): SchemaReturn {
+    return new mongoose.Schema(schemaDefinition) as SchemaReturn;
   }
-  model(name: string, schema?: mongoose.Schema): typeof Model {
-   
-    return mongoose.model(name, schema);
+
+  createModel<SchemaType extends Schema>(
+    modelName: string,
+    schema: SchemaType
+  ): Model<InferSchemaType<SchemaType>> {
+    return mongoose.model(modelName, schema);
   }
 }
-export { Schema, Model };
+
 export default mongooseAdapter;

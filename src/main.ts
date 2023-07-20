@@ -3,7 +3,7 @@ dotenv.config();
 import "./infra/http/express";
 
 import { CommandsUseCase } from "./core/usecases/commands";
-import { WhatsAppClient } from "./infra/venom/WhatsappClient";
+import { WhatsAppClient } from "./infra/Whatsapp/venom";
 import { logger } from "./infra/logger/logger";
 
 import mongoURI from "./infra/database/mongoDB";

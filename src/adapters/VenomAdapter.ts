@@ -1,16 +1,16 @@
 import { create, CreateOptions, SendStickerResult, Whatsapp } from 'venom-bot'
 import { IWhatsappAplication } from './interfaces/whatsappAplication'
-import { Message } from './interfaces/Message'
-import { ISender } from './interfaces/sender'
+import { IMessage } from '../core/entities/Message'
+import { IWhatsappSender } from './interfaces/whatsappSender'
 
-class VenomAdapter implements IWhatsappAplication, ISender {
+class VenomAdapter implements IWhatsappAplication, IWhatsappSender {
   private whatsappClient: Whatsapp
 
   async initialize(session: string, ...rest: CreateOptions[]): Promise<Whatsapp> {
     return (this.whatsappClient = await create({ session, ...rest }))
   }
 
-  async onMessage(callback: (message: Message) => void): Promise<void> {
+  async onMessage(callback: (message: IMessage) => void): Promise<void> {
     await this.whatsappClient.onMessage((message) => {
       const messageConverted = this.convertMessageVenomToMessage(message)
       callback(messageConverted)
@@ -18,7 +18,7 @@ class VenomAdapter implements IWhatsappAplication, ISender {
   }
 
   private convertMessageVenomToMessage(messageVenom: any) {
-    return messageVenom as Message
+    return messageVenom as IMessage
   }
 
   async sendText(to: string, content: string): Promise<object> {

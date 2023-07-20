@@ -1,5 +1,5 @@
 import { Message, Whatsapp } from "venom-bot";
-import { Sender } from "../../infra/venom/Sender";
+import { Sender } from "../../infra/Whatsapp/Sender";
 import { extractTelephoneForIdTelephone } from "../../helpers/extractTelephoneForIdTelephone";
 
 import { ConsultantRepository } from "../../infra/repositories/Consultant";

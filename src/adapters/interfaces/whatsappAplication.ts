@@ -1,4 +1,4 @@
-import { Message } from "./Message";
+import { Message } from "../../core/entities/Message";
 
 
 export interface IWhatsappAplication {

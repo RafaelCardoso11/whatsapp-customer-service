@@ -1,5 +1,3 @@
-import VenomAdapter from '../../adapters/VenomAdapter'
-import { Sender } from '../../infra/Whatsapp/Sender'
 import { ConsultantRepositoryMemory } from '../../infra/repositories/ConsultantMemory'
 import { FindConsultantAvailable } from './FindConsultantAvailableUseCase'
 

@@ -14,10 +14,13 @@
     "venom-bot": "^5.0.11"
   },
   "scripts": {
-    "dev": "nodemon src/main.ts"
+    "dev": "nodemon src/main.ts",
+    "test": "tsc && jest ./dist"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
+    "jest": "^29.6.1",
+    "@types/jest": "^29.5.3",
     "@types/spinnies": "^0.5.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",

@@ -5,9 +5,8 @@ import { FindConsultantAvailable } from './FindConsultantAvailableUseCase'
 
 describe('FindConsultantAvailableUseCase', () => {
   it('should find available Consultant', async () => {
-    const sender = new Sender(new VenomAdapter())
     const consultantRepository = new ConsultantRepositoryMemory()
-    const findConsultantAvailable = new FindConsultantAvailable(consultantRepository, sender)
+    const findConsultantAvailable = new FindConsultantAvailable(consultantRepository)
 
     const consultantAvailable = await findConsultantAvailable.execute()
 

@@ -10,24 +10,22 @@ import { EMessageType } from '../entities/Message'
 export class FindConsultantAvailable {
   consultantRepository: ConsultantRepository
   sender: Sender
-  constructor(consultantRepository: ConsultantRepository, sender: Sender) {
+  constructor(consultantRepository: ConsultantRepository) {
     this.consultantRepository = consultantRepository
-    this.sender = sender
   }
-  async execute(clientCurrent: Client) {
-    const availableConsultant = await this.consultantRepository.findConsultantWithoutClient()
+  async execute() {
+    const availableConsultant = await this.consultantRepository.findConsultantAvailable()
 
     if (!availableConsultant) {
       logger.error(constants.error.NO_AVAILABLE_CONSULTANT)
-      return availableConsultant
     }
 
-    const updatedConsultant = await this.updateConsultantWithClient(availableConsultant, clientCurrent)
+    // const updatedConsultant = await this.updateConsultantWithClient(availableConsultant, clientCurrent)
 
-    if (updatedConsultant) {
-      this.sendMessageToConsultantForNewClient(updatedConsultant.telephone, clientCurrent.name)
-    }
-    return updatedConsultant
+    // if (updatedConsultant) {
+    //   this.sendMessageToConsultantForNewClient(updatedConsultant.telephone, clientCurrent.name)
+    // }
+    return availableConsultant
   }
   private async updateConsultantWithClient(consultant: Consultant, clientCurrent: Client): Promise<Consultant | null> {
     try {

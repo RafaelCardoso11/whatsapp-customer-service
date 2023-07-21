@@ -6,11 +6,11 @@ const constants = {
   },
   sucess: {
     NEW_CLIENT_FOR_CONSULTANT: '_Ei, Você tem um novo cliente para atender. O *{clientName}* está te esperando._',
-    MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT: '*Consultor ${consultantName}*\n${messageContent}',
+    MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT: '*Consultor {consultantName}*\n${messageContent}',
     MESSAGE_WITH_INFO_CLIENT:
-      '*Nome: ${nameSaveClient} / ${nameClient}*\n' + 
-      'Data/Hora: ${dateCurrent}\n' + 
-      'Mensagem: ${messageContent}',
+      '*Nome: {nameSaveClient} / {nameClient}*\n' + 
+      'Data/Hora: {dateCurrent}\n' + 
+      'Mensagem: {messageContent}',
   },
 }
 

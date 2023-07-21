@@ -1,32 +1,21 @@
+import { Client } from './Client';
+import { Consultant } from './Consultant';
+
 interface IAvaliation {
   content: string;
 }
 
-interface IConsultant {
-  name: string;
-  number: string;
-}
-
-interface IClient {
-  name: string;
-  number: string;
-}
 class Attendiment {
   attendimentStars: number;
   avaliation: IAvaliation[];
-  consultant: IConsultant;
-  client: IConsultant;
+  consultant: Consultant;
+  client: Client;
   date: Date;
-  constructor(
-    attendimentStars: number,
-    avaliation: IAvaliation[],
-    consultant: IConsultant,
-    client: IClient
-  ) {
+  constructor(attendimentStars: number, avaliation: IAvaliation[], consultant: Consultant, client: Client) {
     this.attendimentStars = attendimentStars;
     this.avaliation = avaliation;
     this.consultant = consultant;
-    this.client = client
+    this.client = client;
   }
 }
 

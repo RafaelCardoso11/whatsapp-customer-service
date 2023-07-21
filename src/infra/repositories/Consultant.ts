@@ -50,7 +50,7 @@ class ConsultantRepository {
     }
     return consultantWithClientEmpty;
   }
-  async create(consultant: { name: string; number: string }): Promise<Consultant | null> {
+  async create(consultant: { name: string; telephone: string }): Promise<Consultant | null> {
     const created = (await ConsultantModel.create(consultant)).toJSON() as Consultant;
 
     if (created) {

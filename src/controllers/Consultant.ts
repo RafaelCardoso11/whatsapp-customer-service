@@ -28,11 +28,11 @@ export class ConsultantController {
     }
   }
   async register(req: Request, res: Response): Promise<void> {
-    const { name, number } = req.body as Consultant;
+    const { name, telephone } = req.body as Consultant;
 
     const consultant = await this.consultantRepository.create({
       name,
-      number,
+      telephone,
     });
 
  

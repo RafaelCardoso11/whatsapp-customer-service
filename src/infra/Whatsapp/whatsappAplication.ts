@@ -1,13 +1,15 @@
-import { Message, MessageTypes } from '../../adapters/interfaces/Message'
-import { ISender } from '../../adapters/interfaces/sender'
+import { IMessage, EMessageType } from '../../core/entities/message'
+import { IWhatsappSender } from '../../adapters/interfaces/whatsappSender'
 import { IWhatsappAplication } from '../../adapters/interfaces/whatsappAplication'
 import { logger } from '../logger/logger'
 
-class WhatsappAplication implements IWhatsappAplication, ISender {
+class WhatsappAplication implements IWhatsappAplication {
   whatsappAplication: IWhatsappAplication
+  sender: IWhatsappSender
 
-  constructor(whatsappAplication: IWhatsappAplication) {
+  constructor(whatsappAplication: IWhatsappAplication, sender: IWhatsappSender) {
     this.whatsappAplication = whatsappAplication
+    this.sender = sender
   }
 
   async initialize(): Promise<void> {
@@ -19,38 +21,11 @@ class WhatsappAplication implements IWhatsappAplication, ISender {
     }
   }
   async onMessage(): Promise<void> {
-    await this.whatsappAplication.onMessage((message: Message) => {
+    await this.whatsappAplication.onMessage((message: IMessage) => {
       const { type, to, content } = message
-      
-      if (type.includes(MessageTypes.text)) {
-        this.sendText(to, content)
-      } else if (type.includes(MessageTypes.image)) {
-        this.sendImage(to, content)
-      } else if (type.includes(MessageTypes.song)) {
-        this.sendVoice(to, content)
-      } else if (type.includes(MessageTypes.sticker)) {
-        this.sendSticker(to, content)
-      }
-    })
-  }
 
-  sendText(to: string, content: string): Promise<object> {
-    throw new Error('Method not implemented.')
-  }
-  sendImage(to: string, content: string): Promise<object> {
-    throw new Error('Method not implemented.')
-  }
-  sendVoice(to: string, content: string): Promise<unknown> {
-    throw new Error('Method not implemented.')
-  }
-  sendSticker(to: string, path: string): Promise<false | object> {
-    throw new Error('Method not implemented.')
-  }
-  sendVideoAsGif(to: string, path: string, filename: string, caption: string): Promise<void> {
-    throw new Error('Method not implemented.')
-  }
-  sendDocument(to: string, path: string): Promise<unknown> {
-    throw new Error('Method not implemented.')
+     
+    })
   }
 }
 export default WhatsappAplication

@@ -285,6 +285,11 @@
     "@types/mime" "*"
     "@types/node" "*"
 
+"@types/spinnies@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@types/spinnies/-/spinnies-0.5.0.tgz#5fecedfe30282fe22671417889a1ec31e679be65"
+  integrity sha512-wJjKMQG3jbi7tYAnqMi0L1CiPFzuG3cBgxACnpQBsZTRDyKrBlYdVvrCss1KHhVv0n7Balzd6MkVGp8DjTL8cw==
+
 "@types/triple-beam@^1.3.2":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@types/triple-beam/-/triple-beam-1.3.2.tgz#38ecb64f01aa0d02b7c8f4222d7c38af6316fef8"

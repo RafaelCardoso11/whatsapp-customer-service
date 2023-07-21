@@ -1,24 +1,24 @@
 class Consultant {
-  _id: string;
-  name: string;
-  number: string;
+  _id: string
+  name: string
+  telephone: string
   clientCurrent: {
-    _id: string;
-    name: string;
-    number: string;
-  };
+    _id: string
+    name: string
+    telephone: string
+  }
 
   constructor(
     id: string,
     name: string,
-    number: string,
-    clientCurrent: { _id: string; name: string; number: string }
+    telephone: string,
+    clientCurrent: { _id: string; name: string; telephone: string }
   ) {
-    this._id = id;
-    this.name = name;
-    this.number = number;
-    this.clientCurrent = clientCurrent;
+    this._id = id
+    this.name = name
+    this.telephone = telephone
+    this.clientCurrent = clientCurrent
   }
 }
 
-export { Consultant };
+export { Consultant }

@@ -1,4 +1,4 @@
-import { IMessage, EMessageType } from '../../core/entities/message'
+import { IMessage } from '../../core/entities/Message'
 import { IWhatsappSender } from '../../adapters/interfaces/whatsappSender'
 import { IWhatsappAplication } from '../../adapters/interfaces/whatsappAplication'
 import { logger } from '../logger/logger'

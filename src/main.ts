@@ -16,7 +16,7 @@ async function startApp() {
     const commands = new CommandsUseCase();
     const app = new WhatsAppClient(commands);
 
-    app.initialize();
+
   } catch (error) {
     logger.error("Error to initialize App:", error);
   }

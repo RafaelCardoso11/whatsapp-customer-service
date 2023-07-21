@@ -1,11 +1,13 @@
 class Client {
-  name: string;
-  telephone: string;
+  _id?: string
+  name: string
+  telephone: string
 
-  constructor(_id: string, name: string, telephone: string) {
-    this.name = name;
-    this.telephone = telephone;
+  constructor(id: string, name: string, telephone: string) {
+    this._id = id
+    this.name = name
+    this.telephone = telephone
   }
 }
 
-export { Client };
+export { Client }

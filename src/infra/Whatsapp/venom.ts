@@ -1,121 +1,83 @@
-import { Message, Whatsapp, create } from "venom-bot";
-import { MessageService } from "../../core/services/MessageService";
-import { CommandsUseCase } from "../../core/usecases/commands";
-import { ConsultantRepository } from "../repositories/Consultant";
+import { MessageService } from '../../core/services/MessageService'
+import { CommandsUseCase } from '../../core/usecases/commands'
+import { ConsultantRepository } from '../repositories/Consultant'
 
-import { extractTelephoneForIdTelephone } from "../../helpers/extractTelephoneForIdTelephone";
-import { Consultant } from "../../core/entities/Consultant";
-import { logger } from "../logger/logger";
+import { extractTelephoneForIdTelephone } from '../../helpers/extractTelephoneForIdTelephone'
+import { Consultant } from '../../core/entities/Consultant'
+import { logger } from '../logger/logger'
+import { IWhatsappSender } from '../../adapters/interfaces/whatsappSender'
+import { IMessage } from '../../core/entities/Message'
 
-const CHAT_ID_STATUS = "status@broadcast";
+const CHAT_ID_STATUS = 'status@broadcast'
 export class WhatsAppClient {
-  private client: Whatsapp;
-  private commandsUseCase: CommandsUseCase;
+  private client: IWhatsappSender
+  private commandsUseCase: CommandsUseCase
 
   constructor(private readonly commands: CommandsUseCase) {
-    this.commandsUseCase = commands;
+    this.commandsUseCase = commands
   }
 
-  async initialize() {
-    try {
-      const client = await create({
-        session: "fones-belem",
-      });
-      this.client = client;
-
-      this.configureMessageHandling();
-    } catch (error) {
-      logger.error("Error during application bootstrap", error);
-    }
-  }
-
-  private configureMessageHandling() {
-    this.client.onMessage((message: Message): void => {
-      const notIsStatus = message.chatId !== CHAT_ID_STATUS;
-      console.log(message)
-      if (notIsStatus) {
-        this.handleReceivedMessage(message);
-      }
-    });
-  }
-
-  private async handleReceivedMessage(message: Message) {
+  private async handleReceivedMessage(message: IMessage) {
     const {
       sender: { id: idTelephone },
-    } = message;
+    } = message
 
-    const sender = new MessageService(this.client);
-    const consultants = await this.fetchConsultants();
+    const sender = new MessageService(this.client)
+    const consultants = await this.fetchConsultants()
 
     if (consultants) {
-      const telephoneClient = extractTelephoneForIdTelephone(idTelephone);
-      const isConsultant = this.isConsultant(telephoneClient, consultants);
+      const telephoneClient = extractTelephoneForIdTelephone(idTelephone)
+      const isConsultant = this.isConsultant(telephoneClient, consultants)
 
       const consultantWithClientCurrent = consultants.find(
-        ({ clientCurrent }) => clientCurrent.number === telephoneClient
-      );
+        ({ clientCurrent }) => clientCurrent?.telephone === telephoneClient
+      )
 
-      const isNewSupport = !consultantWithClientCurrent;
+      const isNewSupport = !consultantWithClientCurrent
 
       if (isConsultant) {
-        const initWithCommand = /^#\//;
-        const isCommand = initWithCommand.test(message.content);
+        const initWithCommand = /^#\//
+        const isCommand = initWithCommand.test(message.content)
 
         if (isCommand) {
-          const command = await this.commandsUseCase.executeCommand(
-            isConsultant,
-            message.content
-          );
-          this.client.sendText(idTelephone, command);
+          const command = await this.commandsUseCase.executeCommand(isConsultant, message.content)
+          this.client.sendText(idTelephone, command)
         } else {
-          const consultantCurrent = consultants.find(
-            ({ number }) => number === telephoneClient
-          );
-          if (consultantCurrent) {
-            sender.sendMessageToClient(
-              consultantCurrent.clientCurrent._id,
-              message
-            );
+          const consultantCurrent = consultants.find(({ telephone }) => telephone === telephoneClient)
+          if (consultantCurrent && consultantCurrent.clientCurrent?._id) {
+            sender.sendMessageToClient(consultantCurrent.clientCurrent._id, message)
           } else {
-            this.client.sendText(
-              idTelephone,
-              "_Você não está em um atendimento!_"
-            );
+            this.client.sendText(idTelephone, '_Você não está em um atendimento!_')
           }
         }
       } else {
         if (isNewSupport) {
           if (await sender.startSupport(idTelephone)) {
-            sender.sendMessageToConsultant(message);
+            sender.sendMessageToConsultant(message)
           } else {
-            logger.error("Support not initialized");
+            logger.error('Support not initialized')
           }
         } else {
-          sender.sendMessageToConsultant(message);
+          sender.sendMessageToConsultant(message)
         }
       }
     } else {
-      logger.info("Nenhum consultor cadastrado");
+      logger.info('Nenhum consultor cadastrado')
     }
   }
 
   private async fetchConsultants() {
     try {
-      const consultantRepository = new ConsultantRepository();
-      const consultants = await consultantRepository.getAll();
-      return consultants;
+      const consultantRepository = new ConsultantRepository()
+      const consultants = await consultantRepository.getAll()
+      return consultants
     } catch (error) {
-      logger.error("Error updating consultants:", error);
+      logger.error('Error updating consultants:', error)
     }
   }
-  private isConsultant(
-    telephoneClient: string,
-    consultants: Consultant[]
-  ): Consultant | undefined {
-    const consultant = consultants.find(
-      ({ number }) => number === telephoneClient
-    );
+  private isConsultant(telephoneClient: string, consultants: Consultant[]): Consultant | undefined {
+    const consultant = consultants.find(({ telephone }) => telephone === telephoneClient)
 
-    return consultant;
+    return consultant
   }
 }

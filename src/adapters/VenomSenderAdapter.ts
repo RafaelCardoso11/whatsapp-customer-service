@@ -6,7 +6,6 @@ class VenomSenderAdapter implements IWhatsappSender {
   constructor(private readonly whatsappClient: Whatsapp) {}
 
   async sendText(to: string, content: string): Promise<object> {
-    console.log(this.whatsappClient)
     return await this.whatsappClient.sendText(to, content)
   }
   async sendImage(to: string, content: string): Promise<object> {

@@ -6,30 +6,32 @@ import { Consultant } from '../entities/Consultant'
 import { EMessageType } from '../entities/Message'
 import { SendMessageToClient } from './SendMessageToClientUseCase'
 import SenderClientMockAdapter from '../../adapters/SenderClientMockAdapter'
+import WhatsappClient from '../../infra/Whatsapp/Client'
 
 describe('SendMessageToClientUseCase', () => {
   it('should send message to client', async () => {
-    const whatsappClient = new SenderClientMockAdapter()
-    whatsappClient.initialize()
-
+    const clientMockAdapter = new SenderClientMockAdapter()
+    const whatsappClient = await new WhatsappClient(clientMockAdapter).initialize()
     const senderAdapter = new SenderMockAdapter(whatsappClient)
-    console.log(senderAdapter, 'senderAdapter')
     const sender = new Sender(senderAdapter)
-
     const sendMessageToClient = new SendMessageToClient(sender)
-
     const client = new Client('1', 'Rafael', '9196320038')
 
     const message = 'Olá, tudo bem?'
 
-    const sendTextSpy = jest.spyOn(sender, 'sendText')
+    const senderAdapterSpy = jest.spyOn(sender, 'sendText')
+    const senderSpy = jest.spyOn(sender, 'sendText')
 
-    const messageSended = await sendMessageToClient.execute(EMessageType.TEXT, client, message)
+    const messageSended = await sendMessageToClient.execute(EMessageType.TEXT, client.telephone, message)
 
-    expect(sendTextSpy).toHaveBeenCalledWith(client.telephone, message)
+    expect(senderAdapterSpy).toHaveBeenCalledWith(client.telephone, message)
+    expect(senderSpy).toHaveBeenCalledWith(client.telephone, message)
+
+    expect(messageSended).toEqual({ to: client.telephone, content: message })
   })
-  it.skip('should send message formatted to client with name consultant', async () => {
-    const whatsappClient = new SenderClientMockAdapter()
+  it('should send message text formatted to client with name consultant', async () => {
+    const clientMockAdapter = new SenderClientMockAdapter()
+    const whatsappClient = await new WhatsappClient(clientMockAdapter).initialize()
     const senderAdapter = new SenderMockAdapter(whatsappClient)
     const sender = new Sender(senderAdapter)
 
@@ -40,32 +42,40 @@ describe('SendMessageToClientUseCase', () => {
 
     const message = 'Olá, tudo bem?'
 
-    const messageSended = await sendMessageToClient.messageFormattedWithNameConsultant(consultant, message)
+    const messageToClient = await sendMessageToClient.messageFormattedWithNameConsultant(
+      client.telephone,
+      consultant.name,
+      EMessageType.TEXT,
+      message
+    )
 
     const messageWithNameClient = constants.sucess.MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT.replace(
       '{consultantName}',
       consultant.name
     ).replace('{messageContent}', message)
 
-    expect(messageSended).toBe(messageWithNameClient)
+    expect(messageToClient).toEqual({ to: client.telephone, content: messageWithNameClient })
   })
-  it.skip('should send two messages to the client. One waiting for a consultant and outher asking for information to speed up customer service', async () => {
-    const whatsappClient = new SenderClientMockAdapter()
+  it('should send two messages to the client. One waiting for a consultant and outher asking for information to speed up customer service', async () => {
+    const clientMockAdapter = new SenderClientMockAdapter()
+    const whatsappClient = await new WhatsappClient(clientMockAdapter).initialize()
     const senderAdapter = new SenderMockAdapter(whatsappClient)
     const sender = new Sender(senderAdapter)
 
     const sendMessageToClient = new SendMessageToClient(sender)
 
+    const senderSpy = jest.spyOn(sender, 'sendText')
+
     const client = new Client('1', 'Rafael', '9196320038')
-    const consultant = new Consultant('1', 'Rebeca', '9196320037', client)
 
-    const message = 'Olá, tudo bem?'
+    const sended = await sendMessageToClient.newAttendiment(client.telephone)
 
-    const messageSended = await sendMessageToClient.newAttendiment(consultant, message)
+    const { MESSAGE_WAIT_FOR_CONSULTANT_1, MESSAGE_WAIT_FOR_CONSULTANT_2 } = constants.sucess
 
-    expect(messageSended).toEqual([
-      constants.sucess.MESSAGE_WAIT_FOR_CONSULTANT_1,
-      constants.sucess.MESSAGE_WAIT_FOR_CONSULTANT_2,
-    ])
+
+    expect(senderSpy).toBeCalledTimes(2)
+    expect(senderSpy).toHaveBeenCalledWith(client.telephone, MESSAGE_WAIT_FOR_CONSULTANT_1)
+    expect(senderSpy).toHaveBeenCalledWith(client.telephone, MESSAGE_WAIT_FOR_CONSULTANT_2)
+    expect(sended).toBeTruthy()
   })
 })

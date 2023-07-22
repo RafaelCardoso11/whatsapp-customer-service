@@ -4,5 +4,5 @@ export interface IWhatsappSender {
   sendVoice(to: string, content: string): Promise<unknown>
   sendSticker(to: string, path: string): Promise<false | object>
   sendVideoAsGif(to: string, path: string, filename: string, caption: string): Promise<void>
-  sendDocument(to: string, path: string): Promise<unknown>
+  sendDocument(to: string, path: string, filename?: string, caption?: string): Promise<unknown>
 }

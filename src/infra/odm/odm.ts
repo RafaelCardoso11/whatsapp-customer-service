@@ -1,6 +1,7 @@
 import { Schema, SchemaDefinition, ConnectOptions, Model } from 'mongoose'
 import { IOdm } from '../../adapters/interfaces/odm'
 import mongooseAdapter from '../../adapters/MongooseAdapter'
+import { logger } from '../logger/logger'
 
 class Odm<TSchema> implements IOdm<Schema, Model<any>> {
   private odm: IOdm<Schema, Model<any>>
@@ -10,7 +11,11 @@ class Odm<TSchema> implements IOdm<Schema, Model<any>> {
     this.Schema = schema
   }
   async connection<Options extends ConnectOptions>(uri: string, options?: Options): Promise<void> {
-    await this.odm.connection(uri, options)
+    try {
+      await this.odm.connection(uri, options)
+    } catch (error) {
+      logger.error('connection error', error)
+    }
   }
   async disconnect(): Promise<void> {
     await this.disconnect()

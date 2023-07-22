@@ -44,6 +44,6 @@ export class SendMessageFormattedToConsultant {
   private sendMessageWithIdTelephone(telephone: string, message: string) {
     const idTelephone = telephoneToIdTelephone(telephone);
 
-    this.sender.execute(EMessageType.text, idTelephone, message);
+    this.sender.execute(EMessageType.TEXT, idTelephone, message);
   }
 }

@@ -41,6 +41,6 @@ export class FindConsultantAvailable {
     const idTelephone = telephoneToIdTelephone(telephone)
 
     const messageWithNameClient = constants.sucess.NEW_CLIENT_FOR_CONSULTANT.replace('{clientName}', clientName)
-    this.sender.execute(EMessageType.text, idTelephone, messageWithNameClient)
+    this.sender.execute(EMessageType.TEXT, idTelephone, messageWithNameClient)
   }
 }

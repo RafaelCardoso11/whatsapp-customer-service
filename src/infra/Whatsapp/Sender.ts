@@ -2,20 +2,18 @@ import { IWhatsappSender } from '../../adapters/interfaces/whatsappSender'
 import { EMessageType } from '../../core/entities/Message'
 
 export class Sender implements IWhatsappSender {
-  private sender: IWhatsappSender
-  constructor(sender: IWhatsappSender) {
-    this.sender = sender
-  }
+  constructor(private sender: IWhatsappSender) {}
 
   async execute(type: string, to: string, content: string): Promise<unknown> {
     switch (type) {
-      case EMessageType.text:
+      case EMessageType.TEXT:
+        console.log(this.sender, 'aa')
         return await this.sender.sendText(to, content)
-      case EMessageType.image:
+      case EMessageType.IMAGE:
         return await this.sender.sendImage(to, content)
-      case EMessageType.voice:
+      case EMessageType.VOICE:
         return await this.sender.sendVoice(to, content)
-      case EMessageType.sticker:
+      case EMessageType.STICKER:
         return await this.sender.sendSticker(to, content)
       default:
         throw new Error('The message type is not supported')
@@ -37,6 +35,6 @@ export class Sender implements IWhatsappSender {
     return await this.sender.sendDocument(to, content)
   }
   async sendText(to: string, content: string): Promise<object> {
-    return await this.sender.sendImage(to, content)
+    return await this.sender.sendText(to, content)
   }
 }

@@ -1,11 +1,10 @@
 import { IMessage } from '../core/entities/Message'
 import { IWhatsappClient } from './interfaces/whatsappClient'
-import { IWhatsappSender } from './interfaces/whatsappSender'
 
 class SenderClientMockAdapter implements IWhatsappClient {
   private whatsappClient: IWhatsappClient
 
-  async initialize(): Promise<IWhatsappSender> {
+  async initialize(): Promise<IWhatsappClient> {
     const whatsappClient: IWhatsappClient = {
       sendText: function (to: string, content: string): Promise<object> {
         return Promise.resolve({ to, content })
@@ -25,15 +24,15 @@ class SenderClientMockAdapter implements IWhatsappClient {
       sendDocument: function (to: string, path: string, filename?: string, caption?: string) {
         return Promise.resolve({ to, path, filename, caption })
       },
-      initialize: function (session: string): Promise<IWhatsappSender> {
+      initialize: function (session: string): Promise<IWhatsappClient> {
         throw new Error('Function not implemented.')
       },
       onMessage: function (callback: (message: IMessage) => void): Promise<void> {
         throw new Error('Function not implemented.')
-      }
+      },
     }
 
-    return whatsappClient as IWhatsappSender
+    return whatsappClient
   }
 
   async onMessage(callback: (message: IMessage) => void): Promise<void> {

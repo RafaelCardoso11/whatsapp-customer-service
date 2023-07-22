@@ -1,17 +1,16 @@
 import { create, CreateOptions, Whatsapp } from 'venom-bot'
 
 import { IMessage } from '../core/entities/Message'
-import VenomSenderAdapter from './VenomSenderAdapter'
-import { IWhatsappSender } from './interfaces/whatsappSender'
+
 import { IWhatsappClient } from './interfaces/whatsappClient'
 
 class VenomClientAdapter implements IWhatsappClient {
   private whatsappClient: Whatsapp
 
-  async initialize(session: string, ...rest: CreateOptions[]): Promise<IWhatsappSender> {
+  async initialize(session: string, ...rest: CreateOptions[]): Promise<Whatsapp> {
     const whatsappClient = await create({ session, ...rest })
     this.whatsappClient = whatsappClient
-    return new VenomSenderAdapter(whatsappClient)
+    return whatsappClient
   }
 
   async onMessage(callback: (message: IMessage) => void): Promise<void> {

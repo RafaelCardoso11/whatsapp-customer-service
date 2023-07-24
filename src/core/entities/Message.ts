@@ -33,14 +33,13 @@ interface MediaData {
   waveform: null
 }
 
-export interface Sender {
-  id: string
+interface Sender {
   name: string
   shortName: string
   pushname: string
+  telephone: string
 }
 export interface IMessage {
-  id: string
   type: string
   from: string
   to: string

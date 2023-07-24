@@ -1,5 +1,5 @@
 import constants from '../../constants'
-import { telephoneToIdTelephone } from '../../helpers/telephoneToIdTelephone'
+
 import { Sender } from '../../infra/Whatsapp/Sender'
 import { logger } from '../../infra/logger/logger'
 import { ConsultantRepository } from '../../infra/repositories/Consultant'
@@ -38,9 +38,7 @@ export class FindConsultantAvailable {
   }
 
   private sendMessageToConsultantForNewClient(telephone: string, clientName: string) {
-    const idTelephone = telephoneToIdTelephone(telephone)
-
     const messageWithNameClient = constants.sucess.NEW_CLIENT_FOR_CONSULTANT.replace('{clientName}', clientName)
-    this.sender.execute(EMessageType.TEXT, idTelephone, messageWithNameClient)
+    this.sender.execute(EMessageType.TEXT, telephone, messageWithNameClient)
   }
 }

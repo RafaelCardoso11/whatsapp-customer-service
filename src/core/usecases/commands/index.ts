@@ -1,48 +1,48 @@
-
-import { Consultant } from "../../entities/Consultant";
-import { ChangeConsultantCommand } from "./ChangeConsultantUseCase";
-import { CloseSessionCommand } from "./CloseSessionCommandUseCase";
-import { GenerateWhatsappLinkCommandCommand } from "./GenerateWhatsappLinkCommandUseCase";
-import { ListCommandsCommand } from "./ListCommandsUseCase";
-import { Command, CommandsWithDescription } from "./commands";
-import { ICommand } from "./interfaces/command";
+import { formatterCommandInvalid } from '../../../helpers/formatterCommadInvalid'
+import { formatterCommandWithSuggestion } from '../../../helpers/formatterCommandWithSuggestion'
+import { Sender } from '../../../infra/Whatsapp/Sender'
+import { AttendimentRepository } from '../../../infra/repositories/Attendiment'
+import { Consultant } from '../../entities/Consultant'
+import { ChangeConsultantCommand } from './ChangeConsultantUseCase'
+import { CloseSessionCommand } from './CloseSessionCommandUseCase'
+import { GenerateWhatsappLinkCommandCommand } from './GenerateWhatsappLinkCommandUseCase'
+import { ListCommandsCommand } from './ListCommandsUseCase'
+import { Command, CommandsWithDescription } from './commands'
+import { ICommand } from './interfaces/command'
 
 export class CommandsUseCase {
-  private commands: Map<string, ICommand> = new Map();
+  private commands: Map<string, ICommand> = new Map()
 
-  constructor() {
-    this.registerCommand(Command.listCommands, new ListCommandsCommand());
-    this.registerCommand(Command.CloseSession, new CloseSessionCommand());
-    this.registerCommand(
-      Command.WaClientLink,
-      new GenerateWhatsappLinkCommandCommand()
-    );
-    this.registerCommand(
-      Command.ChangeConsultant,
-      new ChangeConsultantCommand()
-    );
+  constructor(private readonly sender: Sender) {
+    const attendimentRepository = new AttendimentRepository()
+
+    this.registerCommand(Command.listCommands, new ListCommandsCommand(sender))
+    this.registerCommand(Command.CloseSession, new CloseSessionCommand(sender, attendimentRepository))
+    this.registerCommand(Command.WaClientLink, new GenerateWhatsappLinkCommandCommand())
+    this.registerCommand(Command.ChangeConsultant, new ChangeConsultantCommand())
   }
 
-  private async registerCommand(
-    name: string,
-    command: ICommand
-  ): Promise<void> {
-    this.commands.set(name, command);
+  private async registerCommand(name: string, command: ICommand): Promise<void> {
+    this.commands.set(name, command)
   }
 
-  async executeCommand(consultant: Consultant, name: string): Promise<string> {
-    const command = this.commands.get(name);
-    if (command) {
-      return await command.execute(consultant);
+  async executeCommand(consultant: Consultant, command: string): Promise<void> {
+    const getCommand = this.commands.get(command)
+
+    if (getCommand) {
+      await getCommand.execute(consultant)
     } else {
-      return `*Comando não reconhecido: ${name}.* _Listar comandos: #/comandos_`;
+      await this.sender.sendText(consultant.telephone, formatterCommandInvalid(command))
+
+      const commandSuggestion = formatterCommandWithSuggestion(command, this.Commands)
+
+      if (commandSuggestion) {
+        await this.sender.sendText(consultant.telephone, commandSuggestion)
+      }
     }
   }
 
   get Commands(): string[] {
-    const commands = Object.keys(CommandsWithDescription).map((command) => {
-      return command;
-    });
-    return commands;
+    return Object.keys(CommandsWithDescription)
   }
 }

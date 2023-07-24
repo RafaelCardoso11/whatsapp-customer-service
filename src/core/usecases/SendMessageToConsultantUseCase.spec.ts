@@ -1,8 +1,5 @@
-import SenderMockAdapter from '../../adapters/SenderMockAdapter'
-import constants from '../../constants'
 import { Sender } from '../../infra/Whatsapp/Sender'
 import { Client } from '../entities/Client'
-import { Consultant } from '../entities/Consultant'
 import { EMessageType } from '../entities/Message'
 import { SendMessageToConsultant } from './SendMessageToConsultantUseCase'
 import SenderClientMockAdapter from '../../adapters/SenderClientMockAdapter'
@@ -12,9 +9,11 @@ import { formatterMessageClientWithInfoClient } from '../../helpers/formatterMes
 describe('SendMessageToConsultantUseCase', () => {
   it('should send message to Consultant', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
-    const whatsappClient = await new WhatsappClient(clientMockAdapter).initialize()
-    const senderAdapter = new SenderMockAdapter(whatsappClient)
-    const sender = new Sender(senderAdapter)
+    const whatsappClient = new WhatsappClient(clientMockAdapter)
+
+    whatsappClient.initialize()
+
+    const sender = new Sender(whatsappClient)
     const sendMessageToConsultant = new SendMessageToConsultant(sender)
 
     const client = new Client('1', 'Rafael', '9196320038')
@@ -33,9 +32,11 @@ describe('SendMessageToConsultantUseCase', () => {
   })
   it('should send message text formatted to consultant with infos (name, nameSave, dateCurrent, content) consultant', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
-    const whatsappClient = await new WhatsappClient(clientMockAdapter).initialize()
-    const senderAdapter = new SenderMockAdapter(whatsappClient)
-    const sender = new Sender(senderAdapter)
+    const whatsappClient = new WhatsappClient(clientMockAdapter)
+
+    whatsappClient.initialize()
+
+    const sender = new Sender(whatsappClient)
 
     const sendMessageToConsultant = new SendMessageToConsultant(sender)
 

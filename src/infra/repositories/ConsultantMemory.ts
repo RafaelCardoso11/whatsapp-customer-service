@@ -30,6 +30,12 @@ class ConsultantRepositoryMemory implements ConsultantRepository {
 
     return consultantById || null
   }
+  async getByTelephone(telephone: string): Promise<Consultant | null> {
+    const consultantByTelephone = this.consultants.find(({ telephone: TP }) => TP === telephone)
+
+    return consultantByTelephone || null
+  }
+
   async getAll(): Promise<Consultant[]> {
     return this.consultants
   }

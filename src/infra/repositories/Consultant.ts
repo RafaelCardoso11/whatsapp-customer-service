@@ -7,6 +7,10 @@ class ConsultantRepository {
     const consultant = await ConsultantModel.findById(id).exec()
     return consultant ? (consultant.toObject() as Consultant) : null
   }
+  async getByTelephone(telephone: string): Promise<Consultant | null> {
+    const consultant = await ConsultantModel.findOne({ telephone }).exec()
+    return consultant ? (consultant.toObject() as Consultant) : null
+  }
   async getAll(): Promise<Consultant[]> {
     const consultants = await ConsultantModel.find().exec()
     return consultants.map((consultant) => consultant.toObject() as Consultant)
@@ -23,6 +27,7 @@ class ConsultantRepository {
     const consultantAvailable = await ConsultantModel.findOne({ clientCurrent: { _id: idClient } }).exec()
     return consultantAvailable ? (consultantAvailable.toObject() as Consultant) : null
   }
+
   async updateClientCurrent(idConsultant: string, clientCurrent: Client): Promise<Consultant | null> {
     const consultantUpdated = await ConsultantModel.findOneAndUpdate(
       { _id: idConsultant },

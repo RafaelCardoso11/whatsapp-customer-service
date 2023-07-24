@@ -3,6 +3,9 @@ const constants = {
     NO_AVAILABLE_CONSULTANT: 'Nenhum consultor disponível',
     FAIL_TO_REGISTER_CLIENT_FOR_CONSULTANT: 'Erro ao cadastrar o cliente no Consultor.',
     FAIL_TO_UPDATE_CLIENT_FOR_CONSULTANT: 'Erro ao fazer o Update do cliente Atual no Consultor.',
+    YOU_NOT_ARE_ATTENDIMENT: '_Você não está em um atendimento!_',
+    COMMAND_INVALID: `*Comando não reconhecido: {command}.* _Veja todos os comandos em #/comandos_`,
+    COMMAND_SUGGESTION: `_Você quis dizer *{commandSuggestion}*_?`,
   },
   sucess: {
     NEW_CLIENT_FOR_CONSULTANT: '_Ei, Você tem um novo cliente para atender. O *{clientName}* está te esperando._',

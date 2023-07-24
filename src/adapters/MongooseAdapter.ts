@@ -8,7 +8,7 @@ class mongooseAdapter implements IOdm<Schema, Model<any>> {
       await mongoose.connect(uri, options)
       logger.info('Connected to MongoDB')
     } catch (error) {
-      logger.error(error)
+      logger.error('Connection MongoDB Error')
     }
   }
   async disconnect(): Promise<void> {

@@ -1,6 +1,7 @@
 const constants = {
   error: {
     NO_AVAILABLE_CONSULTANT: 'Nenhum consultor disponível',
+    NO_UPDATED_CLIENT: 'O Cliente não foi atualizado',
     FAIL_TO_REGISTER_CLIENT_FOR_CONSULTANT: 'Erro ao cadastrar o cliente no Consultor.',
     FAIL_TO_UPDATE_CLIENT_FOR_CONSULTANT: 'Erro ao fazer o Update do cliente Atual no Consultor.',
     YOU_NOT_ARE_ATTENDIMENT: '_Você não está em um atendimento!_',

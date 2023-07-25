@@ -53,6 +53,13 @@ class ConsultantRepositoryMemory implements ConsultantRepository {
 
     return consultantByIdClient || null
   }
+
+  async findByTelephoneClient(telephone: string): Promise<Consultant | null> {
+    const consultantByIdClient = this.consultants.find(({ clientCurrent }) => clientCurrent?.telephone === telephone)
+
+    return consultantByIdClient || null
+  }
+
   async updateClientCurrent(idConsultant: string, clientCurrent: Client): Promise<Consultant | null> {
     const indexConsultantById = this.consultants.findIndex(({ _id }) => _id === idConsultant)
     this.consultants[indexConsultantById].clientCurrent = clientCurrent

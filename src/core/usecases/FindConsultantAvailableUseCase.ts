@@ -8,8 +8,8 @@ import { Consultant } from '../entities/Consultant'
 import { EMessageType } from '../entities/Message'
 
 export class FindConsultantAvailable {
-  consultantRepository: ConsultantRepository
-  sender: Sender
+  private consultantRepository: ConsultantRepository
+  private sender: Sender
   constructor(consultantRepository: ConsultantRepository) {
     this.consultantRepository = consultantRepository
   }

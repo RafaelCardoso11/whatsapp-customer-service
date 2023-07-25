@@ -1,6 +1,5 @@
-import { Consultant } from "../../../entities/Consultant";
-
+import { Consultant } from '../../../entities/Consultant'
 
 export interface ICommand {
-  execute(consultant?: Consultant): Promise<string> | string;
+  execute(consultant?: Consultant, contentNextMessageClient?: () => Promise<string>): Promise<void> | string
 }

@@ -1,11 +1,12 @@
 import { IMessage } from '../core/entities/Message'
 import { IWhatsappClient } from './interfaces/whatsappClient'
+import { IWhatsappSender } from './interfaces/whatsappSender'
 
 class SenderClientMockAdapter implements IWhatsappClient {
-  private whatsappClient: IWhatsappClient
+  private whatsappSender: IWhatsappSender
 
   async initialize(): Promise<void> {
-    const whatsappClient: IWhatsappClient = {
+    const whatsappSender: IWhatsappSender = {
       sendText: function (to: string, content: string): Promise<object> {
         return Promise.resolve({ to, content })
       },
@@ -24,44 +25,30 @@ class SenderClientMockAdapter implements IWhatsappClient {
       sendDocument: function (to: string, path: string, filename?: string, caption?: string) {
         return Promise.resolve({ to, path, filename, caption })
       },
-      initialize: function (session: string): Promise<void> {
-        throw new Error('Function not implemented.')
-      },
-      onMessage: function (callback: (message: IMessage) => void): Promise<void> {
-        throw new Error('Function not implemented.')
-      },
     }
 
-    this.whatsappClient = whatsappClient
+    this.whatsappSender = whatsappSender
   }
-
-  async onMessage(callback: (message: IMessage) => void): Promise<void> {
-    await this.whatsappClient.onMessage((message) => {
-      const messageConverted = this.convertMessageVenomToMessage(message)
-      callback(messageConverted)
-    })
-  }
-
-  private convertMessageVenomToMessage(messageVenom: any) {
-    return messageVenom as IMessage
+  onMessage(callback: (message: IMessage) => void): Promise<void> {
+    throw new Error('Method not implemented.')
   }
   async sendText(to: string, content: string): Promise<object> {
-    return await this.whatsappClient.sendText(to, content)
+    return await this.whatsappSender.sendText(to, content)
   }
   async sendImage(to: string, content: string): Promise<object> {
-    return await this.whatsappClient.sendText(to, content)
+    return await this.whatsappSender.sendText(to, content)
   }
   async sendVoice(to: string, content: string): Promise<unknown> {
-    return await this.whatsappClient.sendVoice(to, content)
+    return await this.whatsappSender.sendVoice(to, content)
   }
   async sendSticker(to: string, path: string): Promise<false | object> {
-    return await this.whatsappClient.sendSticker(to, path)
+    return await this.whatsappSender.sendSticker(to, path)
   }
   async sendVideoAsGif(to: string, path: string, filename: string, caption: string): Promise<void> {
-    return await this.whatsappClient.sendVideoAsGif(to, path, filename, caption)
+    return await this.whatsappSender.sendVideoAsGif(to, path, filename, caption)
   }
   async sendDocument(to: string, path: string, filename?: string, caption?: string): Promise<unknown> {
-    return await this.whatsappClient.sendDocument(to, path, filename, caption)
+    return await this.whatsappSender.sendDocument(to, path, filename, caption)
   }
 }
 

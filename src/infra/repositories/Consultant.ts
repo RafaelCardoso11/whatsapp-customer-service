@@ -27,6 +27,10 @@ class ConsultantRepository {
     const consultantAvailable = await ConsultantModel.findOne({ clientCurrent: { _id: idClient } }).exec()
     return consultantAvailable ? (consultantAvailable.toObject() as Consultant) : null
   }
+  async findByTelephoneClient(telephone: string): Promise<Consultant | null> {
+    const consultant = await ConsultantModel.findOne({ clientCurrent: { telephone } }).exec()
+    return consultant ? (consultant.toObject() as Consultant) : null
+  }
 
   async updateClientCurrent(idConsultant: string, clientCurrent: Client): Promise<Consultant | null> {
     const consultantUpdated = await ConsultantModel.findOneAndUpdate(

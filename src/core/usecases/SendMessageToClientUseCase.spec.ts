@@ -6,14 +6,17 @@ import { EMessageType } from '../entities/Message'
 import { SendMessageToClient } from './SendMessageToClientUseCase'
 import SenderClientMockAdapter from '../../adapters/SenderClientMockAdapter'
 import WhatsappClient from '../../infra/Whatsapp/Client'
+import { CommandsUseCase } from './commands'
 
 describe('SendMessageToClientUseCase', () => {
   it('should send message to client', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
-    const whatsappClient = new WhatsappClient(clientMockAdapter)
+    const sender = new Sender(clientMockAdapter)
+    const commands = new CommandsUseCase(sender)
+    const clientWhatsapp = new WhatsappClient(clientMockAdapter, commands)
 
-    whatsappClient.initialize()
-    const sender = new Sender(whatsappClient)
+    clientWhatsapp.initialize()
+
     const sendMessageToClient = new SendMessageToClient(sender)
     const client = new Client('1', 'Rafael', '9196320038')
 
@@ -31,11 +34,11 @@ describe('SendMessageToClientUseCase', () => {
   })
   it('should send message text formatted to client with name consultant', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
-    const whatsappClient = new WhatsappClient(clientMockAdapter)
+    const sender = new Sender(clientMockAdapter)
+    const commands = new CommandsUseCase(sender)
+    const clientWhatsapp = new WhatsappClient(clientMockAdapter, commands)
 
-    whatsappClient.initialize()
-
-    const sender = new Sender(whatsappClient)
+    clientWhatsapp.initialize()
 
     const sendMessageToClient = new SendMessageToClient(sender)
 
@@ -59,12 +62,12 @@ describe('SendMessageToClientUseCase', () => {
     expect(messageToClient).toEqual({ to: client.telephone, content: messageWithNameClient })
   })
   it('should send two messages to the client. One waiting for a consultant and outher asking for information to speed up customer service', async () => {
-    const clientMockAdapter = new SenderClientMockAdapter()
-    const whatsappClient = new WhatsappClient(clientMockAdapter)
+   const clientMockAdapter = new SenderClientMockAdapter()
+    const sender = new Sender(clientMockAdapter)
+    const commands = new CommandsUseCase(sender)
+    const clientWhatsapp = new WhatsappClient(clientMockAdapter, commands)
 
-    whatsappClient.initialize()
-
-    const sender = new Sender(whatsappClient)
+    clientWhatsapp.initialize()
 
     const sendMessageToClient = new SendMessageToClient(sender)
 

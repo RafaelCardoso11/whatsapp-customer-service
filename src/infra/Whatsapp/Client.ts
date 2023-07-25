@@ -9,7 +9,10 @@ import UpdateConsultantAvailableWithClient from '../../core/usecases/UpdateConsu
 import { SendMessageToClient } from '../../core/usecases/SendMessageToClientUseCase'
 import { SendMessageToConsultant } from '../../core/usecases/SendMessageToConsultantUseCase'
 import { FindConsultantAvailable } from '../../core/usecases/FindConsultantAvailableUseCase'
-import { Sender } from './Sender'
+import { Client } from '../../core/entities/Client'
+
+import CheckIsConsultant from '../../core/usecases/CheckIsConsultantUseCase'
+import { QueueAttendimentUseCase } from '../../core/usecases/QueueAttendiment'
 const CHAT_ID_STATUS = 'status@broadcast'
 class WhatsappClient implements IWhatsappClient {
   private readonly client: IWhatsappClient
@@ -18,12 +21,12 @@ class WhatsappClient implements IWhatsappClient {
   private readonly sendMessageToConsultant: SendMessageToConsultant
   private readonly sendMessageToClient: SendMessageToClient
   private readonly findConsultantAvailable: FindConsultantAvailable
+  private readonly checkIsConsultant: CheckIsConsultant
+  private readonly queueAttendiment: QueueAttendimentUseCase
 
-  constructor(client: IWhatsappClient) {
+  constructor(client: IWhatsappClient, commands: CommandsUseCase) {
     this.client = client
-
-    const sender = new Sender(client)
-    this.commands = new CommandsUseCase(sender)
+    this.commands = commands
   }
 
   async initialize(): Promise<void> {
@@ -36,16 +39,18 @@ class WhatsappClient implements IWhatsappClient {
   }
   async onMessage(): Promise<void> {
     await this.client.onMessage((message: IMessage) => {
-      this.handleReceivedMessage(message)
+      if (!CHAT_ID_STATUS) {
+        this.handleReceivedMessage(message)
+      }
     })
   }
 
   private async handleReceivedMessage(message: IMessage) {
     const {
-      sender: { telephone },
+      sender: { telephone, name, pushname },
     } = message
 
-    const consultant = await this.IsConsultant(telephone)
+    const consultant = await this.checkIsConsultant.execute(telephone)
 
     if (consultant) {
       const initWithCommand = /^#\//
@@ -54,33 +59,44 @@ class WhatsappClient implements IWhatsappClient {
       if (isCommand) {
         await this.commands.executeCommand(consultant, message.content)
       }
+    } else {
+      const consultorInAttendimentWithClient = await this.findConsultantByIdClient(telephone)
+
+      if (consultorInAttendimentWithClient) {
+        const client: Client = {
+          nameSave: pushname,
+          name,
+          telephone,
+        }
+        this.sendMessageToConsultant.messageFormattedWithInfosClient(
+          client,
+          message.content,
+          consultorInAttendimentWithClient.telephone
+        )
+      } else {
+        this.sendMessageToClient.newAttendiment(telephone)
+        const consultantAvaiable = await this.findConsultantAvailable.execute()
+
+        const clientCurrent: Client = {
+          nameSave: pushname,
+          name,
+          telephone,
+        }
+
+        if (consultantAvaiable) {
+          await this.updateConsultantAvailableWithClient.execute(consultantAvaiable._id, clientCurrent)
+        } else {
+          await this.queueAttendiment.add(clientCurrent)
+        }
+      }
     }
   }
 
-  private async IsConsultant(telephone: string): Promise<Consultant | null> {
+  private async findConsultantByIdClient(idClient: string): Promise<Consultant | null> {
     const consultantRepository = new ConsultantRepository()
-    const consultant = await consultantRepository.getByTelephone(telephone)
+    const consultant = await consultantRepository.findConsultantByIdClient(idClient)
 
     return consultant || null
-  }
-
-  async sendImage(to: string, content: string): Promise<object> {
-    return await this.client.sendImage(to, content)
-  }
-  async sendVoice(to: string, content: string): Promise<unknown> {
-    return await this.client.sendVoice(to, content)
-  }
-  async sendSticker(to: string, content: string): Promise<false | object> {
-    return await this.client.sendSticker(to, content)
-  }
-  async sendVideoAsGif(to: string, content: string, filename: string, caption: string): Promise<void> {
-    await this.client.sendVideoAsGif(to, content, filename, caption)
-  }
-  async sendDocument(to: string, content: string): Promise<unknown> {
-    return await this.client.sendDocument(to, content)
-  }
-  async sendText(to: string, content: string): Promise<object> {
-    return await this.client.sendText(to, content)
   }
 }
 export default WhatsappClient

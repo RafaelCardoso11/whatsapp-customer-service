@@ -8,6 +8,8 @@ import mongoURI from './infra/database/mongoDB'
 import Odm from './infra/odm/odm'
 import VenomClientAdapter from './adapters/VenomClientAdapter'
 import WhatsappClient from './infra/Whatsapp/Client'
+import { CommandsUseCase } from './core/usecases/commands'
+import { Sender } from './infra/Whatsapp/Sender'
 
 async function startApp() {
   try {
@@ -15,7 +17,9 @@ async function startApp() {
 
     const venomClient = new VenomClientAdapter()
 
-    const client = new WhatsappClient(venomClient)
+    const sender = new Sender(venomClient)
+    const commands = new CommandsUseCase(sender)
+    const client = new WhatsappClient(venomClient, commands)
 
     await client.initialize()
   } catch (error) {

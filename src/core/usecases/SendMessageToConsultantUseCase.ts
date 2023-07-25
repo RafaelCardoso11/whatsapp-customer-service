@@ -9,9 +9,13 @@ export class SendMessageToConsultant {
   execute(messageType: string, consultantTelephone: string, message: string): Promise<unknown> {
     return this.sender.execute(messageType, consultantTelephone, message)
   }
-  messageFormattedWithInfosClient(client: Client, messageContent: string): Promise<unknown> {
+  messageFormattedWithInfosClient(
+    client: Client,
+    messageContent: string,
+    consultantTelephone: string
+  ): Promise<unknown> {
     const formattedMessage = formatterMessageClientWithInfoClient(client, messageContent)
 
-    return this.sender.execute(EMessageType.TEXT, client.telephone, formattedMessage)
+    return this.sender.execute(EMessageType.TEXT, consultantTelephone, formattedMessage)
   }
 }

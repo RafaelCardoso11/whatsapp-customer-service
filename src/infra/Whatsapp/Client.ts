@@ -9,34 +9,30 @@ import { CommandsUseCase } from '../../core/usecases/Commands'
 import { Client } from '../../core/entities/Client'
 
 import { QueueAttendimentUseCase } from '../../core/usecases/QueueAttendiment'
-import { Sender } from './Sender'
-import { SendMessageToConsultant } from '../../core/usecases/Sender/SendMessageToConsultantUseCase'
-import { SendMessageToClient } from '../../core/usecases/Sender/SendMessageToClientUseCase'
+
 import { ConsultantUseCase } from '../../core/usecases/Consultant'
+import { SenderUseCase } from '../../core/usecases/Sender'
 
 const CHAT_ID_STATUS = 'status@broadcast'
 class WhatsappClient implements IWhatsappClient {
   private readonly client: IWhatsappClient
   private readonly commandsUseCase: CommandsUseCase
-  private readonly sendMessageToConsultant: SendMessageToConsultant
-  private readonly sendMessageToClient: SendMessageToClient
   private readonly consultantUseCase: ConsultantUseCase
   private readonly queueAttendimentUseCase: QueueAttendimentUseCase
+  private readonly senderUseCase: SenderUseCase
 
   constructor(
     client: IWhatsappClient,
-    sender: Sender,
     queueAttendimentUseCase: QueueAttendimentUseCase,
     commandsUseCase: CommandsUseCase,
-    consultantUseCase: ConsultantUseCase
+    consultantUseCase: ConsultantUseCase,
+    senderUseCase: SenderUseCase
   ) {
     this.client = client
     this.commandsUseCase = commandsUseCase
     this.consultantUseCase = consultantUseCase
     this.queueAttendimentUseCase = queueAttendimentUseCase
-
-    this.sendMessageToClient = new SendMessageToClient(sender)
-    this.sendMessageToConsultant = new SendMessageToConsultant(sender)
+    this.senderUseCase = senderUseCase
   }
 
   async initialize(): Promise<void> {
@@ -82,44 +78,41 @@ class WhatsappClient implements IWhatsappClient {
           name,
           telephone,
         }
-        this.sendMessageToConsultant.messageFormattedWithInfosClient(
+        this.senderUseCase.sendFormattedMessageToConsultant(
           client,
           message.content,
           consultorInAttendimentWithClient.telephone
         )
       } else {
-        if (await this.sendMessageToClient.newAttendiment(telephone)) {
-          logger.info('Novo atendimento')
-          const consultantAvaiable = await this.consultantUseCase.findConsultantAvailable()
+        await this.senderUseCase.newAttendiment(telephone)
 
-          const clientCurrent: Client = {
-            nameSave,
-            name,
-            telephone,
-          }
+        logger.info('Novo atendimento')
+        const consultantAvaiable = await this.consultantUseCase.findConsultantAvailable()
 
-          if (consultantAvaiable) {
-            await this.consultantUseCase.updateConsultantAvailableWithNewClient(
-              consultantAvaiable._id as string,
-              clientCurrent
-            )
-            await this.sendMessageToConsultant.execute(
-              EMessageType.TEXT,
-              consultantAvaiable.telephone,
-              `*ATENÇÃO:* _Novo atendimento_ \n Seja cordiál com 😊 ${clientCurrent.name}`
-            )
-            await this.sendMessageToConsultant.messageFormattedWithInfosClient(
-              clientCurrent,
-              message.content,
-              consultantAvaiable.telephone
-            )
-            logger.info('Cliente com um consultor')
-          } else {
-            await this.queueAttendimentUseCase.add(clientCurrent)
-            logger.info('Fila de espera')
-          }
+        const clientCurrent: Client = {
+          nameSave,
+          name,
+          telephone,
+        }
+
+        if (consultantAvaiable) {
+          await this.consultantUseCase.updateConsultantAvailableWithNewClient(
+            consultantAvaiable._id as string,
+            clientCurrent
+          )
+          await this.senderUseCase.sendFormattedMessageToConsultantForNewClient(
+            EMessageType.TEXT,
+            consultantAvaiable.telephone
+          )
+          await this.senderUseCase.sendFormattedMessageToConsultant(
+            clientCurrent,
+            message.content,
+            consultantAvaiable.telephone
+          )
+          logger.info('Cliente com um consultor')
         } else {
-          logger.info('Continuando atendimento')
+          await this.queueAttendimentUseCase.add(clientCurrent)
+          logger.info('Fila de espera')
         }
       }
     }

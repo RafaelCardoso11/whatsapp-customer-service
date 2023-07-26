@@ -1,9 +1,6 @@
 import { EMessageType, IMessage } from '../../core/entities/Message'
 import { logger } from '../logger/logger'
 import { IWhatsappClient } from '../../adapters/interfaces/whatsappClient'
-
-import { ConsultantRepository } from '../repositories/Consultant'
-import { Consultant } from '../../core/entities/Consultant'
 import { CommandsUseCase } from '../../core/usecases/Commands'
 
 import { Client } from '../../core/entities/Client'
@@ -58,7 +55,7 @@ class WhatsappClient implements IWhatsappClient {
 
     const consultant = await this.consultantUseCase.CheckIsConsultantByTelephone(telephone)
 
-    console.log('Uai')
+
     if (consultant) {
       logger.info('É um consultor')
       const initWithCommand = /^#\//
@@ -69,7 +66,7 @@ class WhatsappClient implements IWhatsappClient {
       }
     } else {
       logger.info('É um cliente')
-      const consultorInAttendimentWithClient = await this.findConsultantByIdClient(telephone)
+      const consultorInAttendimentWithClient = await this.consultantUseCase.findByTelephoneClient(telephone)
 
       if (consultorInAttendimentWithClient) {
         logger.info('Cliente já em atendimento')
@@ -116,13 +113,6 @@ class WhatsappClient implements IWhatsappClient {
         }
       }
     }
-  }
-
-  private async findConsultantByIdClient(idClient: string): Promise<Consultant | null> {
-    const consultantRepository = new ConsultantRepository()
-    const consultant = await consultantRepository.findConsultantByIdClient(idClient)
-
-    return consultant || null
   }
 }
 export default WhatsappClient

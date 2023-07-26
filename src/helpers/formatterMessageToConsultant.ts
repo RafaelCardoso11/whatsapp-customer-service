@@ -1,7 +1,7 @@
 import constants from '../constants'
 import { Client } from '../core/entities/Client'
 
-function formatterMessageClientWithInfoClient(client: Client, message: string): string {
+function formatterMessageToConsultant(client: Client, message: string): string {
   const dateCurrent = new Date().toLocaleString('pt-BR')
 
   const { MESSAGE_WITH_INFO_CLIENT } = constants.sucess_to_whatsapp
@@ -11,4 +11,4 @@ function formatterMessageClientWithInfoClient(client: Client, message: string): 
     .replace('{messageContent}', message)
 }
 
-export { formatterMessageClientWithInfoClient }
+export { formatterMessageToConsultant }

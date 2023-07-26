@@ -14,6 +14,7 @@ import { ConsultantRepository } from './infra/repositories/Consultant'
 import { QueueAttendimentRepository } from './infra/repositories/QueueAttendiment'
 import { QueueAttendimentUseCase } from './core/usecases/QueueAttendiment'
 import { ConsultantUseCase } from './core/usecases/Consultant'
+import { SenderUseCase } from './core/usecases/Sender'
 
 async function startApp() {
   try {
@@ -29,8 +30,15 @@ async function startApp() {
     const commandsUseCase = new CommandsUseCase(sender)
     const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository)
     const consultantUseCase = new ConsultantUseCase(consultantRepository)
+    const senderUseCase = new SenderUseCase(sender)
 
-    const client = new WhatsappClient(venomClient, sender, queueAttendimentUseCase, commandsUseCase, consultantUseCase)
+    const client = new WhatsappClient(
+      venomClient,
+      queueAttendimentUseCase,
+      commandsUseCase,
+      consultantUseCase,
+      senderUseCase
+    )
 
     await client.initialize()
   } catch (error) {

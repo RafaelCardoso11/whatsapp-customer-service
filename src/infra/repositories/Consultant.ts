@@ -37,7 +37,7 @@ class ConsultantRepository {
       { _id: idConsultant },
       {
         $set: {
-          clientCurrent: clientCurrent,
+          clientCurrent,
         },
       }
     ).exec()

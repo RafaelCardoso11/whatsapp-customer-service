@@ -10,9 +10,9 @@ import { EMessageType } from '../../entities/Message'
 export class SenderUseCase {
   constructor(private readonly sender: Sender) {}
 
-  private async send(messageType: string, telephone: string, message: string): Promise<void> {
+  private async send(messageType: string, telephone: string, message: string): Promise<unknown> {
     try {
-      await this.sender.execute(messageType, telephone, message)
+      return await this.sender.execute(messageType, telephone, message)
     } catch (error) {
       throw new SendMessageError('Error sending message')
     }
@@ -58,7 +58,7 @@ export class SenderUseCase {
     }
   }
 
-  public async sendFormattedMessageToConsultantForNewClient(telephone: string, clientName: string): Promise<void> {
+  public async sendFormattedMessageToConsultantForNewClient(telephone: string, clientName: string): Promise<unknown> {
     const messageNewClientToConsultant = formattedMessageNewClient(clientName)
     try {
       return await this.send(EMessageType.TEXT, telephone, messageNewClientToConsultant)

@@ -27,11 +27,20 @@ export class ConsultantUseCase {
 
     return availableConsultant
   }
+  public async findByTelephoneClient(telephone: string): Promise<Consultant> {
+    const consultant = await this.consultantRepository.findByTelephoneClient(telephone)
+
+    if (!consultant) {
+      logger.error(consultant)
+    }
+
+    return consultant
+  }
   public async updateConsultantAvailableWithNewClient(idConsultant: string, newClient: Client): Promise<Consultant> {
     const consultantAvaiableUpdated = await this.consultantRepository.updateClientCurrent(idConsultant, newClient)
 
     if (!consultantAvaiableUpdated) {
-        console.log(consultantAvaiableUpdated)
+      logger.error(consultantAvaiableUpdated)
     }
 
     return consultantAvaiableUpdated

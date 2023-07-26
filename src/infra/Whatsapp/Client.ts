@@ -1,4 +1,4 @@
-import { IMessage } from '../../core/entities/Message'
+import { EMessageType, IMessage } from '../../core/entities/Message'
 import { logger } from '../logger/logger'
 import { IWhatsappClient } from '../../adapters/interfaces/whatsappClient'
 
@@ -13,6 +13,9 @@ import { Client } from '../../core/entities/Client'
 
 import CheckIsConsultant from '../../core/usecases/CheckIsConsultantUseCase'
 import { QueueAttendimentUseCase } from '../../core/usecases/QueueAttendiment'
+import { Sender } from './Sender'
+import { QueueAttendimentRepository } from '../repositories/QueueAttendiment'
+
 const CHAT_ID_STATUS = 'status@broadcast'
 class WhatsappClient implements IWhatsappClient {
   private readonly client: IWhatsappClient
@@ -22,11 +25,24 @@ class WhatsappClient implements IWhatsappClient {
   private readonly sendMessageToClient: SendMessageToClient
   private readonly findConsultantAvailable: FindConsultantAvailable
   private readonly checkIsConsultant: CheckIsConsultant
-  private readonly queueAttendiment: QueueAttendimentUseCase
+  private readonly queueAttendimentRepository: QueueAttendimentUseCase
 
-  constructor(client: IWhatsappClient, commands: CommandsUseCase) {
+  constructor(
+    client: IWhatsappClient,
+    sender: Sender,
+    consultantRepository: ConsultantRepository,
+    queueAttendimentRepository: QueueAttendimentRepository,
+    commands: CommandsUseCase
+  ) {
     this.client = client
     this.commands = commands
+
+    this.sendMessageToClient = new SendMessageToClient(sender)
+    this.sendMessageToConsultant = new SendMessageToConsultant(sender)
+    this.findConsultantAvailable = new FindConsultantAvailable(consultantRepository)
+    this.checkIsConsultant = new CheckIsConsultant(consultantRepository)
+    this.queueAttendimentRepository = new QueueAttendimentUseCase(queueAttendimentRepository)
+    this.updateConsultantAvailableWithClient = new UpdateConsultantAvailableWithClient(consultantRepository)
   }
 
   async initialize(): Promise<void> {
@@ -39,7 +55,7 @@ class WhatsappClient implements IWhatsappClient {
   }
   async onMessage(): Promise<void> {
     await this.client.onMessage((message: IMessage) => {
-      if (!CHAT_ID_STATUS) {
+      if (message.chatId != CHAT_ID_STATUS) {
         this.handleReceivedMessage(message)
       }
     })
@@ -47,12 +63,14 @@ class WhatsappClient implements IWhatsappClient {
 
   private async handleReceivedMessage(message: IMessage) {
     const {
-      sender: { telephone, name, pushname },
+      sender: { telephone, name: nameSave, pushname: name },
     } = message
 
     const consultant = await this.checkIsConsultant.execute(telephone)
 
+    console.log('Uai')
     if (consultant) {
+      logger.info('É um consultor')
       const initWithCommand = /^#\//
       const isCommand = initWithCommand.test(message.content)
 
@@ -60,11 +78,13 @@ class WhatsappClient implements IWhatsappClient {
         await this.commands.executeCommand(consultant, message.content)
       }
     } else {
+      logger.info('É um cliente')
       const consultorInAttendimentWithClient = await this.findConsultantByIdClient(telephone)
 
       if (consultorInAttendimentWithClient) {
+        logger.info('Cliente já em atendimento')
         const client: Client = {
-          nameSave: pushname,
+          nameSave,
           name,
           telephone,
         }
@@ -74,19 +94,35 @@ class WhatsappClient implements IWhatsappClient {
           consultorInAttendimentWithClient.telephone
         )
       } else {
-        this.sendMessageToClient.newAttendiment(telephone)
-        const consultantAvaiable = await this.findConsultantAvailable.execute()
+        if (await this.sendMessageToClient.newAttendiment(telephone)) {
+          logger.info('Novo atendimento')
+          const consultantAvaiable = await this.findConsultantAvailable.execute()
 
-        const clientCurrent: Client = {
-          nameSave: pushname,
-          name,
-          telephone,
-        }
+          const clientCurrent: Client = {
+            nameSave,
+            name,
+            telephone,
+          }
 
-        if (consultantAvaiable) {
-          await this.updateConsultantAvailableWithClient.execute(consultantAvaiable._id, clientCurrent)
+          if (consultantAvaiable) {
+            await this.updateConsultantAvailableWithClient.execute(consultantAvaiable._id, clientCurrent)
+            await this.sendMessageToConsultant.execute(
+              EMessageType.TEXT,
+              consultantAvaiable.telephone,
+              `*ATENÇÃO:* _Novo atendimento_ \n Seja cordiál com 😊 ${clientCurrent.name}`
+            )
+            await this.sendMessageToConsultant.messageFormattedWithInfosClient(
+              clientCurrent,
+              message.content,
+              consultantAvaiable.telephone
+            )
+            logger.info('Cliente com um consultor')
+          } else {
+            await this.queueAttendimentRepository.add(clientCurrent)
+            logger.info('Fila de espera')
+          }
         } else {
-          await this.queueAttendiment.add(clientCurrent)
+          logger.info('Continuando atendimento')
         }
       }
     }

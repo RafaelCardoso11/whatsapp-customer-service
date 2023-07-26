@@ -4,7 +4,7 @@ import { IWhatsappClient } from '../../adapters/interfaces/whatsappClient'
 
 import { ConsultantRepository } from '../repositories/Consultant'
 import { Consultant } from '../../core/entities/Consultant'
-import { CommandsUseCase } from '../../core/usecases/commands'
+import { CommandsUseCase } from '../../core/usecases/Commands'
 
 import { Client } from '../../core/entities/Client'
 

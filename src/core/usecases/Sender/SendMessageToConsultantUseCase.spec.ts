@@ -1,9 +1,9 @@
-import { Sender } from '../../../infra/Whatsapp/Sender'
+import { Sender } from '../../../infra/whatsapp/Sender'
 import { Client } from '../../entities/Client'
 import { EMessageType } from '../../entities/Message'
 
 import SenderClientMockAdapter from '../../../adapters/SenderClientMockAdapter'
-import WhatsappClient from '../../../infra/Whatsapp/Client'
+import WhatsappClient from '../../../infra/whatsapp/Client'
 import { formatterMessageClientWithInfoClient } from '../../../helpers/formatterMessageClientWithInfosClient'
 import { CommandsUseCase } from '../commands'
 import { Consultant } from '../../entities/Consultant'

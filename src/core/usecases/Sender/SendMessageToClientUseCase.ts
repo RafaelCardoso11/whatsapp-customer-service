@@ -1,5 +1,5 @@
 import constants from '../../../constants'
-import { Sender } from '../../../infra/Whatsapp/Sender'
+import { Sender } from '../../../infra/whatsapp/Sender'
 import { EMessageType } from '../../entities/Message'
 
 export class SendMessageToClient {

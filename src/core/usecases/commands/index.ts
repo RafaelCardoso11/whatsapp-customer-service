@@ -1,6 +1,6 @@
 import { formatterCommandInvalid } from '../../../helpers/formatterCommadInvalid'
 import { formatterCommandWithSuggestion } from '../../../helpers/formatterCommandWithSuggestion'
-import { Sender } from '../../../infra/Whatsapp/Sender'
+import { Sender } from '../../../infra/whatsapp/Sender'
 import { AttendimentRepository } from '../../../infra/repositories/Attendiment'
 import { Consultant } from '../../entities/Consultant'
 import { ChangeConsultantCommand } from './ChangeConsultantUseCase'

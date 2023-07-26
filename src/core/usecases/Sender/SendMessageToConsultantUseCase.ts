@@ -1,6 +1,6 @@
 import constants from '../../../constants'
 import { formatterMessageClientWithInfoClient } from '../../../helpers/formatterMessageClientWithInfosClient'
-import { Sender } from '../../../infra/Whatsapp/Sender'
+import { Sender } from '../../../infra/whatsapp/Sender'
 import { Client } from '../../entities/Client'
 import { EMessageType } from '../../entities/Message'
 

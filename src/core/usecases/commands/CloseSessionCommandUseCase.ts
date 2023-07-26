@@ -1,4 +1,4 @@
-import { Sender } from '../../../infra/Whatsapp/Sender'
+import { Sender } from '../../../infra/whatsapp/Sender'
 import { logger } from '../../../infra/logger/logger'
 import { AttendimentRepository } from '../../../infra/repositories/Attendiment'
 import { ConsultantRepository } from '../../../infra/repositories/Consultant'

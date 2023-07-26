@@ -1,4 +1,4 @@
-import { Sender } from '../../../infra/Whatsapp/Sender'
+import { Sender } from '../../../infra/whatsapp/Sender'
 import { Consultant } from '../../entities/Consultant'
 import { CommandsWithDescription } from './commands'
 import { ICommand } from './interfaces/command'

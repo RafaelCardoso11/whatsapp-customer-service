@@ -1,30 +1,39 @@
 import { Client } from '../../entities/Client'
 
-import { logger } from '../../../infra/logger/logger'
 import { Consultant } from '../../entities/Consultant'
 import { ConsultantRepository } from '../../../infra/repositories/Consultant'
+import { logger } from '../../../infra/logger/logger'
 import constants from '../../../constants'
 
 export class ConsultantUseCase {
   constructor(private readonly consultantRepository: ConsultantRepository) {}
 
-  public async findAvaiable(): Promise<Consultant> {
+  public async CheckIsConsultantByTelephone(telephone: string): Promise<Consultant> {
+    const consultant = await this.consultantRepository.getByTelephone(telephone)
+
+    if (!consultant) {
+      logger.error(constants)
+    }
+
+    return consultant
+  }
+
+  public async findConsultantAvailable(): Promise<Consultant> {
     const availableConsultant = await this.consultantRepository.findConsultantAvailable()
 
     if (!availableConsultant) {
-      logger.error(constants.error.NO_AVAILABLE_CONSULTANT)
+      logger.error(availableConsultant)
     }
 
     return availableConsultant
   }
+  public async updateConsultantAvailableWithNewClient(idConsultant: string, newClient: Client): Promise<Consultant> {
+    const consultantAvaiableUpdated = await this.consultantRepository.updateClientCurrent(idConsultant, newClient)
 
-  public async updateClient(idConsultant: string, client: Client): Promise<Consultant | null> {
-    const consultantUpdated = await this.consultantRepository.updateClientCurrent(idConsultant, client)
-
-    if (!consultantUpdated) {
-      logger.error(constants.error.NO_UPDATED_CLIENT)
+    if (!consultantAvaiableUpdated) {
+        console.log(consultantAvaiableUpdated)
     }
 
-    return consultantUpdated || null
+    return consultantAvaiableUpdated
   }
 }

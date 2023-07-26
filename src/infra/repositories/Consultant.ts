@@ -11,7 +11,7 @@ import {
   ConsultantUpdateError,
   ConsultantGetAllError,
   ConsultantUpdateClientCurrentError,
-} from '../Errors/Consultant'
+} from '../errors/Consultant'
 
 class ConsultantRepository {
   async create(consultant: Consultant): Promise<Consultant> {

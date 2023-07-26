@@ -11,7 +11,7 @@ import {
   ConsultantGetAllError,
   ConsultantUpdateClientCurrentError,
   ConsultantUpdateError,
-} from '../Errors/Consultant'
+} from '../errors/Consultant'
 
 class ConsultantRepositoryMemory implements ConsultantRepository {
   consultants: Consultant[] = [

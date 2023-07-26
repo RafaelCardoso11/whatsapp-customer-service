@@ -10,6 +10,8 @@ import VenomClientAdapter from './adapters/VenomClientAdapter'
 import WhatsappClient from './infra/Whatsapp/Client'
 import { CommandsUseCase } from './core/usecases/commands'
 import { Sender } from './infra/Whatsapp/Sender'
+import { ConsultantRepository } from './infra/repositories/Consultant'
+import { QueueAttendimentRepository } from './infra/repositories/QueueAttendiment'
 
 async function startApp() {
   try {
@@ -19,7 +21,10 @@ async function startApp() {
 
     const sender = new Sender(venomClient)
     const commands = new CommandsUseCase(sender)
-    const client = new WhatsappClient(venomClient, commands)
+    const consultantRepository = new ConsultantRepository()
+    const queueAttendimentRepository = new QueueAttendimentRepository()
+    
+    const client = new WhatsappClient(venomClient, sender, consultantRepository, queueAttendimentRepository, commands)
 
     await client.initialize()
   } catch (error) {

@@ -7,13 +7,23 @@ import WhatsappClient from '../../infra/Whatsapp/Client'
 import { formatterMessageClientWithInfoClient } from '../../helpers/formatterMessageClientWithInfosClient'
 import { CommandsUseCase } from './commands'
 import { Consultant } from '../entities/Consultant'
+import { ConsultantRepositoryMemory } from '../../infra/repositories/ConsultantMemory'
+import { QueueAttendimentRepository } from '../../infra/repositories/QueueAttendiment'
 
 describe('SendMessageToConsultantUseCase', () => {
   it('should send message to Consultant', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
     const sender = new Sender(clientMockAdapter)
     const commands = new CommandsUseCase(sender)
-    const clientWhatsapp = new WhatsappClient(clientMockAdapter, commands)
+    const consultantRepository = new ConsultantRepositoryMemory()
+    const queueAttendimentRepository = new QueueAttendimentRepository()
+    const clientWhatsapp = new WhatsappClient(
+      clientMockAdapter,
+      sender,
+      consultantRepository,
+      queueAttendimentRepository,
+      commands
+    )
 
     clientWhatsapp.initialize()
 
@@ -41,7 +51,15 @@ describe('SendMessageToConsultantUseCase', () => {
     const clientMockAdapter = new SenderClientMockAdapter()
     const sender = new Sender(clientMockAdapter)
     const commands = new CommandsUseCase(sender)
-    const clientWhatsapp = new WhatsappClient(clientMockAdapter, commands)
+    const consultantRepository = new ConsultantRepositoryMemory()
+    const queueAttendimentRepository = new QueueAttendimentRepository()
+    const clientWhatsapp = new WhatsappClient(
+      clientMockAdapter,
+      sender,
+      consultantRepository,
+      queueAttendimentRepository,
+      commands
+    )
 
     clientWhatsapp.initialize()
 

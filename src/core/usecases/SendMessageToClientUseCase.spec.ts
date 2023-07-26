@@ -7,13 +7,23 @@ import { SendMessageToClient } from './SendMessageToClientUseCase'
 import SenderClientMockAdapter from '../../adapters/SenderClientMockAdapter'
 import WhatsappClient from '../../infra/Whatsapp/Client'
 import { CommandsUseCase } from './commands'
+import { ConsultantRepositoryMemory } from '../../infra/repositories/ConsultantMemory'
+import { QueueAttendimentRepository } from '../../infra/repositories/QueueAttendiment'
 
 describe('SendMessageToClientUseCase', () => {
   it('should send message to client', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
     const sender = new Sender(clientMockAdapter)
     const commands = new CommandsUseCase(sender)
-    const clientWhatsapp = new WhatsappClient(clientMockAdapter, commands)
+    const consultantRepository = new ConsultantRepositoryMemory()
+    const queueAttendimentRepository = new QueueAttendimentRepository()
+    const clientWhatsapp = new WhatsappClient(
+      clientMockAdapter,
+      sender,
+      consultantRepository,
+      queueAttendimentRepository,
+      commands
+    )
 
     clientWhatsapp.initialize()
 
@@ -36,7 +46,15 @@ describe('SendMessageToClientUseCase', () => {
     const clientMockAdapter = new SenderClientMockAdapter()
     const sender = new Sender(clientMockAdapter)
     const commands = new CommandsUseCase(sender)
-    const clientWhatsapp = new WhatsappClient(clientMockAdapter, commands)
+    const consultantRepository = new ConsultantRepositoryMemory()
+    const queueAttendimentRepository = new QueueAttendimentRepository()
+    const clientWhatsapp = new WhatsappClient(
+      clientMockAdapter,
+      sender,
+      consultantRepository,
+      queueAttendimentRepository,
+      commands
+    )
 
     clientWhatsapp.initialize()
 
@@ -62,10 +80,18 @@ describe('SendMessageToClientUseCase', () => {
     expect(messageToClient).toEqual({ to: client.telephone, content: messageWithNameClient })
   })
   it('should send two messages to the client. One waiting for a consultant and outher asking for information to speed up customer service', async () => {
-   const clientMockAdapter = new SenderClientMockAdapter()
+    const clientMockAdapter = new SenderClientMockAdapter()
     const sender = new Sender(clientMockAdapter)
     const commands = new CommandsUseCase(sender)
-    const clientWhatsapp = new WhatsappClient(clientMockAdapter, commands)
+    const consultantRepository = new ConsultantRepositoryMemory()
+    const queueAttendimentRepository = new QueueAttendimentRepository()
+    const clientWhatsapp = new WhatsappClient(
+      clientMockAdapter,
+      sender,
+      consultantRepository,
+      queueAttendimentRepository,
+      commands
+    )
 
     clientWhatsapp.initialize()
 

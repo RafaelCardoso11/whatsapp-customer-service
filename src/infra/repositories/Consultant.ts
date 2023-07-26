@@ -1,70 +1,99 @@
 import { ConsultantModel } from '../../core/schemas/ConsultantSchema'
 import { Consultant } from '../../core/entities/Consultant'
 import { Client } from '../../core/entities/Client'
+import {
+  ConsultantCreationError,
+  ConsultantFindByIdError,
+  ConsultantFindByTelephoneError,
+  ConsultantFindByIdClientError,
+  ConsultantFindByTelephoneClientError,
+  ConsultantFindConsultantAvaiableError,
+  ConsultantUpdateError,
+  ConsultantGetAllError,
+  ConsultantUpdateClientCurrentError,
+} from '../Errors/Consultant'
 
 class ConsultantRepository {
-  async getById(id: string): Promise<Consultant | null> {
-    const consultant = await ConsultantModel.findById(id).exec()
-    return consultant ? (consultant.toObject() as Consultant) : null
+  async create(consultant: Consultant): Promise<Consultant> {
+    try {
+      const created = (await ConsultantModel.create(consultant)).toJSON() as Consultant
+      return created
+    } catch (error) {
+      throw new ConsultantCreationError(JSON.stringify(error))
+    }
   }
-  async getByTelephone(telephone: string): Promise<Consultant | null> {
-    const consultant = await ConsultantModel.findOne({ telephone }).exec()
-    return consultant ? (consultant.toObject() as Consultant) : null
+  async update(consultant: Consultant): Promise<Consultant> {
+    try {
+      const updated = (await ConsultantModel.findOneAndUpdate(consultant)).toJSON() as Consultant
+      return updated
+    } catch (error) {
+      throw new ConsultantUpdateError(JSON.stringify(error))
+    }
+  }
+  async getById(id: string): Promise<Consultant> {
+    try {
+      const consultant = await ConsultantModel.findById(id).exec()
+      return consultant
+    } catch (error) {
+      throw new ConsultantFindByIdError(JSON.stringify(error))
+    }
+  }
+  async getByTelephone(telephone: string): Promise<Consultant> {
+    try {
+      const consultant = await ConsultantModel.findOne({ telephone }).exec()
+      return consultant
+    } catch (error) {
+      throw new ConsultantFindByTelephoneError(JSON.stringify(error))
+    }
   }
   async getAll(): Promise<Consultant[]> {
-    const consultants = await ConsultantModel.find().exec()
-    return consultants.map((consultant) => consultant.toObject() as Consultant)
+    try {
+      const consultants = await ConsultantModel.find().exec()
+      return consultants.map((consultant) => consultant.toObject() as Consultant)
+    } catch (error) {
+      throw new ConsultantGetAllError(JSON.stringify(error))
+    }
   }
   async findConsultantAvailable(): Promise<Consultant> {
-    const consultantAvailable = await ConsultantModel.findOne({ clientCurrent: { $exists: false } }).exec()
-
-    if (!consultantAvailable) {
-      throw new Error(consultantAvailable)
+    try {
+      const consultantAvailable = await ConsultantModel.findOne({ clientCurrent: { $exists: false } }).exec()
+      return consultantAvailable.toObject()
+    } catch (error) {
+      throw new ConsultantFindConsultantAvaiableError(JSON.stringify(error))
     }
-    return consultantAvailable.toObject() as Consultant
   }
-  async findConsultantByIdClient(idClient: string): Promise<Consultant | null> {
-    const consultantAvailable = await ConsultantModel.findOne({ clientCurrent: { _id: idClient } }).exec()
-    return consultantAvailable ? (consultantAvailable.toObject() as Consultant) : null
-  }
-  async findByTelephoneClient(telephone: string): Promise<Consultant | null> {
-    const consultant = await ConsultantModel.findOne({ clientCurrent: { telephone } }).exec()
-    return consultant ? (consultant.toObject() as Consultant) : null
-  }
-
-  async updateClientCurrent(idConsultant: string, clientCurrent: Client): Promise<Consultant | null> {
-    const consultantUpdated = await ConsultantModel.findOneAndUpdate(
-      { _id: idConsultant },
-      {
-        $set: {
-          clientCurrent,
-        },
-      }
-    ).exec()
-
-    return consultantUpdated ? (consultantUpdated.toObject() as Consultant) : null
-  }
-  // async updateConsultant(idConsultant: string, clientCurrent: Client) {
-  //   const consultants = await this.getAll()
-  //   const consultantWithClientEmpty = consultants.find(({ clientCurrent }) => clientCurrent)
-
-  //   if (consultantWithClientEmpty) {
-  //     // this.updateClientCurrent(idConsultant, clientCurrentEmpty) todo: deve remover o client do consultor
-  //     const newConsultant = await this.getById('')
-  //     this.updateClientCurrent(idConsultant, clientCurrent)
-  //     return newConsultant
-  //   } else {
-  //     logger.info('Nenhum consultor disponível')
-  //   }
-  //   return consultantWithClientEmpty
-  // }
-  async create(consultant: { name: string; telephone: string }): Promise<Consultant | null> {
-    const created = (await ConsultantModel.create(consultant)).toJSON() as Consultant
-
-    if (created) {
-      return created
+  async findConsultantByIdClient(idClient: string): Promise<Consultant> {
+    try {
+      const consultantAvailable = await ConsultantModel.findOne({ clientCurrent: { _id: idClient } }).exec()
+      return consultantAvailable.toObject()
+    } catch (error) {
+      throw new ConsultantFindByIdClientError(JSON.stringify(error))
     }
-    return null
+  }
+  async findByTelephoneClient(telephone: string): Promise<Consultant> {
+    try {
+      const consultant = await ConsultantModel.findOne({ clientCurrent: { telephone } }).exec()
+      return consultant.toObject()
+    } catch (error) {
+      throw new ConsultantFindByTelephoneClientError(JSON.stringify(error))
+    }
+  }
+
+  async updateClientCurrent(idConsultant: string, clientCurrent: Client): Promise<Consultant> {
+    try {
+      const consultantUpdated = await ConsultantModel.findOneAndUpdate(
+        { _id: idConsultant },
+        {
+          $set: {
+            clientCurrent,
+          },
+        }
+      ).exec()
+
+      return consultantUpdated.toObject()
+    } catch (error) {
+      throw new ConsultantUpdateClientCurrentError(JSON.stringify(error))
+    }
   }
 }
 

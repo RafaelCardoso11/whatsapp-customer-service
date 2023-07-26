@@ -7,12 +7,12 @@ const constants = {
     YOU_NOT_ARE_ATTENDIMENT: '_Você não está em um atendimento!_',
   },
   sucess_to_whatsapp: {
-    NEW_CLIENT_FOR_CONSULTANT: '_Ei, Você tem um novo cliente para atender. O *{clientName}* está te esperando._',
+    NEW_CLIENT_FOR_CONSULTANT: '*ATENÇÃO:* _Novo atendimento_ \n Seja cordiál com 😊 {clientName} está te esperando.',
     MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT: '*Consultor {consultantName}*\n{messageContent}',
     MESSAGE_WITH_INFO_CLIENT:
       '*Nome: {nameSaveClient} / {nameClient}*\n' + 'Data/Hora: {dateCurrent}\n' + 'Mensagem: {messageContent}',
-    MESSAGE_WAIT_FOR_CONSULTANT_1: `Olá, tudo bem? 😊\n` + `Em breve você será atendido por um de nossos consultores.`,
-    MESSAGE_WAIT_FOR_CONSULTANT_2: `Para agilizar o nosso atendimento informe o seu nome e dúvida/pedido que já retornaremos.`,
+    MESSAGE_WAIT_FOR_CONSULTANT: `Olá, tudo bem? 😊\n` + `Em breve você será atendido por um de nossos consultores.`,
+    MESSAGE_TO_ACCELERATE_ATTENDANCE: `Para agilizar o nosso atendimento informe o seu nome e dúvida/pedido que já retornaremos.`,
   },
   error: {
     consultant: {

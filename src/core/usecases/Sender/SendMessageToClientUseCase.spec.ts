@@ -1,28 +1,35 @@
-import constants from '../../constants'
-import { Sender } from '../../infra/Whatsapp/Sender'
-import { Client } from '../entities/Client'
-import { Consultant } from '../entities/Consultant'
-import { EMessageType } from '../entities/Message'
+import constants from '../../../constants'
+import { Sender } from '../../../infra/Whatsapp/Sender'
+import { Client } from '../../entities/Client'
+import { Consultant } from '../../entities/Consultant'
+import { EMessageType } from '../../entities/Message'
 import { SendMessageToClient } from './SendMessageToClientUseCase'
-import SenderClientMockAdapter from '../../adapters/SenderClientMockAdapter'
-import WhatsappClient from '../../infra/Whatsapp/Client'
-import { CommandsUseCase } from './commands'
-import { ConsultantRepositoryMemory } from '../../infra/repositories/ConsultantMemory'
-import { QueueAttendimentRepository } from '../../infra/repositories/QueueAttendiment'
+import SenderClientMockAdapter from '../../../adapters/SenderClientMockAdapter'
+import WhatsappClient from '../../../infra/Whatsapp/Client'
+import { CommandsUseCase } from '../commands'
+import { ConsultantRepositoryMemory } from '../../../infra/repositories/ConsultantMemory'
+import { QueueAttendimentRepository } from '../../../infra/repositories/QueueAttendiment'
+import { ConsultantUseCase } from '../Consultant'
+import { QueueAttendimentUseCase } from '../QueueAttendiment'
 
 describe('SendMessageToClientUseCase', () => {
   it('should send message to client', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
     const sender = new Sender(clientMockAdapter)
-    const commands = new CommandsUseCase(sender)
+
     const consultantRepository = new ConsultantRepositoryMemory()
     const queueAttendimentRepository = new QueueAttendimentRepository()
+
+    const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository)
+    const commandsUseCase = new CommandsUseCase(sender)
+    const consultantUseCase = new ConsultantUseCase(consultantRepository)
+
     const clientWhatsapp = new WhatsappClient(
       clientMockAdapter,
       sender,
-      consultantRepository,
-      queueAttendimentRepository,
-      commands
+      queueAttendimentUseCase,
+      commandsUseCase,
+      consultantUseCase
     )
 
     clientWhatsapp.initialize()
@@ -45,23 +52,34 @@ describe('SendMessageToClientUseCase', () => {
   it('should send message text formatted to client with name consultant', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
     const sender = new Sender(clientMockAdapter)
-    const commands = new CommandsUseCase(sender)
+
     const consultantRepository = new ConsultantRepositoryMemory()
     const queueAttendimentRepository = new QueueAttendimentRepository()
+
+    const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository)
+    const commandsUseCase = new CommandsUseCase(sender)
+    const consultantUseCase = new ConsultantUseCase(consultantRepository)
+
     const clientWhatsapp = new WhatsappClient(
       clientMockAdapter,
       sender,
-      consultantRepository,
-      queueAttendimentRepository,
-      commands
+      queueAttendimentUseCase,
+      commandsUseCase,
+      consultantUseCase
     )
 
     clientWhatsapp.initialize()
 
     const sendMessageToClient = new SendMessageToClient(sender)
 
-    const client = new Client('1', 'Rafael', '9196320038')
-    const consultant = new Consultant('1', 'Rebeca', '9196320037', client)
+    const client: Client = {
+      name: 'Rafael',
+      telephone: '9196320038',
+    }
+    const consultant: Consultant  = {
+      name: "Rebeca",
+      telephone: '9196320038',
+    }
 
     const message = 'Olá, tudo bem?'
 
@@ -72,7 +90,7 @@ describe('SendMessageToClientUseCase', () => {
       message
     )
 
-    const messageWithNameClient = constants.sucess.MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT.replace(
+    const messageWithNameClient = constants.sucess_to_whatsapp.MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT.replace(
       '{consultantName}',
       consultant.name
     ).replace('{messageContent}', message)
@@ -82,15 +100,20 @@ describe('SendMessageToClientUseCase', () => {
   it('should send two messages to the client. One waiting for a consultant and outher asking for information to speed up customer service', async () => {
     const clientMockAdapter = new SenderClientMockAdapter()
     const sender = new Sender(clientMockAdapter)
-    const commands = new CommandsUseCase(sender)
+
     const consultantRepository = new ConsultantRepositoryMemory()
     const queueAttendimentRepository = new QueueAttendimentRepository()
+
+    const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository)
+    const commandsUseCase = new CommandsUseCase(sender)
+    const consultantUseCase = new ConsultantUseCase(consultantRepository)
+
     const clientWhatsapp = new WhatsappClient(
       clientMockAdapter,
       sender,
-      consultantRepository,
-      queueAttendimentRepository,
-      commands
+      queueAttendimentUseCase,
+      commandsUseCase,
+      consultantUseCase
     )
 
     clientWhatsapp.initialize()
@@ -103,7 +126,7 @@ describe('SendMessageToClientUseCase', () => {
 
     const sended = await sendMessageToClient.newAttendiment(client.telephone)
 
-    const { MESSAGE_WAIT_FOR_CONSULTANT_1, MESSAGE_WAIT_FOR_CONSULTANT_2 } = constants.sucess
+    const { MESSAGE_WAIT_FOR_CONSULTANT_1, MESSAGE_WAIT_FOR_CONSULTANT_2 } = constants.sucess_to_whatsapp
 
     expect(senderSpy).toBeCalledTimes(2)
     expect(senderSpy).toHaveBeenCalledWith(client.telephone, MESSAGE_WAIT_FOR_CONSULTANT_1)

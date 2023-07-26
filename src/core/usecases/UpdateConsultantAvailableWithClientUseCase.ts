@@ -5,7 +5,7 @@ import { Consultant } from '../entities/Consultant'
 export default class UpdateConsultantAvailableWithClient {
   constructor(private readonly consultantRepository: ConsultantRepository) {}
 
-  execute(idConsultant: string, client: Client): Promise<Consultant | null> {
-    return this.consultantRepository.updateClientCurrent(idConsultant, client)
+  async execute(idConsultant: string, client: Client): Promise<Consultant | null> {
+    return await this.consultantRepository.updateClientCurrent(idConsultant, client)
   }
 }

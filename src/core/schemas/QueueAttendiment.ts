@@ -7,4 +7,4 @@ const QueueAttendimentSchema = Odm.createSchema({
   date: { type: "date", required: true },
 });
 
-export const QueueAttendimentModel = Odm.createModel("attendiments", QueueAttendimentSchema);
+export const QueueAttendimentModel = Odm.createModel("queue-Attendiments", QueueAttendimentSchema);

@@ -1,4 +1,3 @@
-import { IMessage } from '../core/entities/Message';
 import { IWhatsappClient } from './interfaces/whatsappClient';
 import { IWhatsappSender } from './interfaces/whatsappSender';
 

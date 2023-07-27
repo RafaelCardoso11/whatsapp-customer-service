@@ -1,18 +1,18 @@
 import { IWhatsappSender } from '../../adapters/interfaces/whatsappSender';
-import { EMessageType } from '../../enums/EMessageType';
+import { ESenderType } from '../../enums/ESenderType';
 
 export class Sender implements IWhatsappSender {
   constructor(private senderAdapter: IWhatsappSender) {}
 
   async execute(type: string, to: string, content: string): Promise<unknown> {
     switch (type) {
-      case EMessageType.TEXT:
+      case ESenderType.TEXT:
         return await this.sendText(to, content);
-      case EMessageType.IMAGE:
+      case ESenderType.IMAGE:
         return await this.sendImage(to, content);
-      case EMessageType.VOICE:
+      case ESenderType.VOICE:
         return await this.sendVoice(to, content);
-      case EMessageType.STICKER:
+      case ESenderType.STICKER:
         return await this.sendSticker(to, content);
       default:
         throw new Error('The message type is not supported');

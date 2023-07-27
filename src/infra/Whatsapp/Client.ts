@@ -4,7 +4,7 @@ import { IWhatsappClient } from '../../adapters/interfaces/whatsappClient';
 import { Client } from '../../core/entities/Client';
 import { Consultant } from '../../core/entities/Consultant';
 import { WhatsappClientDependencies } from './ClientDependencies';
-import { EMessageType } from '../../enums/EMessageType';
+import { ESenderType } from '../../enums/ESenderType';
 
 const CHAT_ID_STATUS = 'status@broadcast';
 class WhatsappClient implements IWhatsappClient {
@@ -86,7 +86,7 @@ class WhatsappClient implements IWhatsappClient {
         clientCurrent
       );
       await this.dependencies.senderUseCase.sendFormattedMessageToConsultantForNewClient(
-        EMessageType.TEXT,
+        ESenderType.TEXT,
         consultantAvaiable.telephone
       );
       await this.dependencies.senderUseCase.sendFormattedMessageToConsultant(

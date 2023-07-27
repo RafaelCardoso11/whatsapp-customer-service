@@ -1,5 +1,5 @@
 import constants from '../../../constants';
-import { EMessageType } from '../../../enums/EMessageType';
+import { ESenderType } from '../../../enums/ESenderType';
 import { formatterMessageToClient } from '../../../helpers/formatterMessageToClient';
 import { formatterMessageToConsultant } from '../../../helpers/formatterMessageToConsultant';
 import { formattedMessageNewClient } from '../../../helpers/formatterMessagemToConsultantForNewClient';
@@ -22,8 +22,8 @@ export class SenderUseCase {
     const { MESSAGE_TO_ACCELERATE_ATTENDANCE, MESSAGE_WAIT_FOR_CONSULTANT } = constants.sucess_to_whatsapp;
 
     try {
-      await this.send(EMessageType.TEXT, clientTelephone, MESSAGE_WAIT_FOR_CONSULTANT);
-      await this.send(EMessageType.TEXT, clientTelephone, MESSAGE_TO_ACCELERATE_ATTENDANCE);
+      await this.send(ESenderType.TEXT, clientTelephone, MESSAGE_WAIT_FOR_CONSULTANT);
+      await this.send(ESenderType.TEXT, clientTelephone, MESSAGE_TO_ACCELERATE_ATTENDANCE);
     } catch (error) {
       throw new SendMessageError('Error during new attendance: ');
     }
@@ -38,7 +38,7 @@ export class SenderUseCase {
     const formattedMessage = formatterMessageToConsultant(client, messageContent);
 
     try {
-      return await this.send(EMessageType.TEXT, consultantTelephone, formattedMessage);
+      return await this.send(ESenderType.TEXT, consultantTelephone, formattedMessage);
     } catch (error) {
       throw new SendMessageError('Error sending formatted message to consultant: ');
     }
@@ -52,7 +52,7 @@ export class SenderUseCase {
     const formattedMessage = formatterMessageToClient(consultantName, messageContent);
 
     try {
-      return await this.send(EMessageType.TEXT, clientTelephone, formattedMessage);
+      return await this.send(ESenderType.TEXT, clientTelephone, formattedMessage);
     } catch (error) {
       throw new SendMessageError('Error during new attendance: ');
     }
@@ -61,7 +61,7 @@ export class SenderUseCase {
   public async sendFormattedMessageToConsultantForNewClient(telephone: string, clientName: string): Promise<unknown> {
     const messageNewClientToConsultant = formattedMessageNewClient(clientName);
     try {
-      return await this.send(EMessageType.TEXT, telephone, messageNewClientToConsultant);
+      return await this.send(ESenderType.TEXT, telephone, messageNewClientToConsultant);
     } catch (error) {
       throw new SendMessageError('Error during new attendance: ');
     }

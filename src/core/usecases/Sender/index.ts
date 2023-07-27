@@ -14,7 +14,7 @@ export class SenderUseCase {
     try {
       return await this.sender.execute(messageType, telephone, message);
     } catch (error) {
-      throw new SendMessageError('Error sending message');
+      throw new SendMessageError(JSON.stringify(error));
     }
   }
 
@@ -25,7 +25,7 @@ export class SenderUseCase {
       await this.send(ESenderType.TEXT, clientTelephone, MESSAGE_WAIT_FOR_CONSULTANT);
       await this.send(ESenderType.TEXT, clientTelephone, MESSAGE_TO_ACCELERATE_ATTENDANCE);
     } catch (error) {
-      throw new SendMessageError('Error during new attendance: ');
+      throw new SendMessageError(JSON.stringify(error));
     }
     return true;
   }
@@ -54,7 +54,7 @@ export class SenderUseCase {
     try {
       return await this.send(ESenderType.TEXT, clientTelephone, formattedMessage);
     } catch (error) {
-      throw new SendMessageError('Error during new attendance: ');
+      throw new SendMessageError(JSON.stringify(error));
     }
   }
 
@@ -63,7 +63,7 @@ export class SenderUseCase {
     try {
       return await this.send(ESenderType.TEXT, telephone, messageNewClientToConsultant);
     } catch (error) {
-      throw new SendMessageError('Error during new attendance: ');
+      throw new SendMessageError(JSON.stringify(error));
     }
   }
 }

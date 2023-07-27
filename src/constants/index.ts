@@ -27,6 +27,9 @@ const constants = {
       FAILED_TO_GET_ALL: 'Erro ao tentar buscar todos os consultores',
       FAILED_TO_UPDATED_CLIENT_CURRENT: 'Erro ao tentar atualizar o cliente atual do consultor',
     },
+    sender: {
+      FAILED_TO_SENDER_MESSAGE: 'Erro ao enviar a mensagem. Erro: ',
+    },
   },
   sucess: {},
 };

@@ -2,39 +2,23 @@ import constants from '../../../constants'
 import { Sender } from '../../../infra/whatsapp/Sender'
 import { Client } from '../../entities/Client'
 import { Consultant } from '../../entities/Consultant'
-
-import SenderClientMockAdapter from '../../../adapters/SenderClientMockAdapter'
-import WhatsappClient from '../../../infra/whatsapp/Client'
-import { CommandsUseCase } from '../Commands'
-import { ConsultantRepositoryMemory } from '../../../infra/repositories/ConsultantMemory'
-import { QueueAttendimentRepository } from '../../../infra/repositories/QueueAttendiment'
-import { ConsultantUseCase } from '../Consultant'
-import { QueueAttendimentUseCase } from '../QueueAttendiment'
-import { SenderUseCase } from '.'
 import { formatterMessageToClient } from '../../../helpers/formatterMessageToClient'
+import { WhatsappClientMemoryFactory } from '../../../infra/whatsapp/ClientMemoryFactory'
+import { SenderUseCase } from '.'
 
 describe('SendMessageToClientUseCase', () => {
-  it('should send message text formatted to client with name consultant', async () => {
-    const clientMockAdapter = new SenderClientMockAdapter()
-    const sender = new Sender(clientMockAdapter)
+  let sender: Sender
+  let senderUseCase: SenderUseCase
 
-    const consultantRepository = new ConsultantRepositoryMemory()
-    const queueAttendimentRepository = new QueueAttendimentRepository()
-
-    const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository)
-    const commandsUseCase = new CommandsUseCase(sender)
-    const consultantUseCase = new ConsultantUseCase(consultantRepository)
-    const senderUseCase = new SenderUseCase(sender)
-
-    const clientWhatsapp = new WhatsappClient(
-      clientMockAdapter,
-      queueAttendimentUseCase,
-      commandsUseCase,
-      consultantUseCase,
-      senderUseCase
-    )
+  beforeEach(() => {
+    const clientWhatsapp = WhatsappClientMemoryFactory.create()
     clientWhatsapp.initialize()
 
+    sender = WhatsappClientMemoryFactory.sender
+    senderUseCase = WhatsappClientMemoryFactory.senderUseCase
+  })
+
+  it('should send message text formatted to client with name consultant', async () => {
     const client: Client = {
       name: 'Rafael',
       telephone: '9196320038',
@@ -53,26 +37,6 @@ describe('SendMessageToClientUseCase', () => {
     expect(messageToClient).toEqual({ to: client.telephone, content: messageWithNameClient })
   })
   it('should send two messages to the client. One waiting for a consultant and outher asking for information to speed up customer service', async () => {
-    const clientMockAdapter = new SenderClientMockAdapter()
-    const sender = new Sender(clientMockAdapter)
-
-    const consultantRepository = new ConsultantRepositoryMemory()
-    const queueAttendimentRepository = new QueueAttendimentRepository()
-
-    const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository)
-    const commandsUseCase = new CommandsUseCase(sender)
-    const consultantUseCase = new ConsultantUseCase(consultantRepository)
-    const senderUseCase = new SenderUseCase(sender)
-
-    const clientWhatsapp = new WhatsappClient(
-      clientMockAdapter,
-      queueAttendimentUseCase,
-      commandsUseCase,
-      consultantUseCase,
-      senderUseCase
-    )
-    clientWhatsapp.initialize()
-
     const senderSpy = jest.spyOn(sender, 'sendText')
 
     const client = new Client('1', 'Rafael', '9196320038')

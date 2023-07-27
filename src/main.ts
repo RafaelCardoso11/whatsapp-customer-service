@@ -6,39 +6,13 @@ import { logger } from './infra/logger/logger'
 
 import mongoURI from './infra/database/mongoDB'
 import Odm from './infra/odm/odm'
-import VenomClientAdapter from './adapters/VenomClientAdapter'
-import WhatsappClient from './infra/whatsapp/Client'
-import { CommandsUseCase } from './core/usecases/Commands'
-import { Sender } from './infra/whatsapp/Sender'
-import { ConsultantRepository } from './infra/repositories/Consultant'
-import { QueueAttendimentRepository } from './infra/repositories/QueueAttendiment'
-import { QueueAttendimentUseCase } from './core/usecases/QueueAttendiment'
-import { ConsultantUseCase } from './core/usecases/Consultant'
-import { SenderUseCase } from './core/usecases/Sender'
+import { WhatsappClientFactory } from './infra/whatsapp/ClientFactory'
 
 async function startApp() {
   try {
     await Odm.connection(mongoURI)
 
-    const venomClient = new VenomClientAdapter()
-
-    const sender = new Sender(venomClient)
-
-    const consultantRepository = new ConsultantRepository()
-    const queueAttendimentRepository = new QueueAttendimentRepository()
-
-    const commandsUseCase = new CommandsUseCase(sender)
-    const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository)
-    const consultantUseCase = new ConsultantUseCase(consultantRepository)
-    const senderUseCase = new SenderUseCase(sender)
-
-    const client = new WhatsappClient(
-      venomClient,
-      queueAttendimentUseCase,
-      commandsUseCase,
-      consultantUseCase,
-      senderUseCase
-    )
+    const client = WhatsappClientFactory.create()
 
     await client.initialize()
   } catch (error) {

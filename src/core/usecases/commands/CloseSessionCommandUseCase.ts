@@ -1,15 +1,9 @@
 import { Sender } from '../../../infra/whatsapp/Sender';
-import { logger } from '../../../infra/logger/logger';
-import { AttendimentRepository } from '../../../infra/repositories/Attendiment';
-import { ConsultantRepository } from '../../../infra/repositories/Consultant';
 import { Consultant } from '../../entities/Consultant';
 import { ICommand } from './interfaces/command';
 
 export class CloseSessionCommand implements ICommand {
-  constructor(
-    private readonly sender: Sender,
-    attendimentRepository: AttendimentRepository
-  ) {}
+  constructor(private readonly sender: Sender) {}
 
   async execute(consultant: Consultant, contentNextMessageClient: () => Promise<string>): Promise<void> {
     this.sender.sendText(

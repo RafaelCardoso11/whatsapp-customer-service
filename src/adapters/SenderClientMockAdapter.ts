@@ -29,7 +29,7 @@ class SenderClientMockAdapter implements IWhatsappClient {
 
     this.whatsappSender = whatsappSender;
   }
-  onMessage(callback: (message: IMessage) => void): Promise<void> {
+  onMessage(): Promise<void> {
     throw new Error('Method not implemented.');
   }
   async sendText(to: string, content: string): Promise<object> {

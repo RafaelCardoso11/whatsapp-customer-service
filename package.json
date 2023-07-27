@@ -16,7 +16,8 @@
   "scripts": {
     "dev": "nodemon src/main.ts",
     "test": "tsc && jest ./dist",
-    "lint": "prettier --write \"**/*.ts\""
+    "format": "prettier --write \"**/*.ts\"",
+    "lint": "eslint \"**/*.ts\" --fix"
   },
   "devDependencies": {
     "@types/didyoumean": "^1.2.0",

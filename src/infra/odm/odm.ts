@@ -1,7 +1,6 @@
 import { Schema, SchemaDefinition, ConnectOptions, Model } from 'mongoose';
 import { IOdm } from '../../adapters/interfaces/odm';
 import mongooseAdapter from '../../adapters/MongooseAdapter';
-import { logger } from '../logger/logger';
 
 class Odm<TSchema> implements IOdm<Schema, Model<any>> {
   private odm: IOdm<Schema, Model<any>>;

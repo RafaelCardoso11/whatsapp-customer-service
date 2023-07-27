@@ -25,10 +25,10 @@ const constants = {
       FAILED_TO_FIND_BY_ID_CLIENT: 'Erro ao tentar encontrar um consultor pelo ID do cliente',
       FAILED_TO_FIND_BY_TELEPHONE: 'Erro ao tentar encontrar um consultor por TELEPHONE',
       FAILED_TO_GET_ALL: 'Erro ao tentar buscar todos os consultores',
-      FAILED_TO_UPDATED_CLIENT_CURRENT: "Erro ao tentar atualizar o cliente atual do consultor"
+      FAILED_TO_UPDATED_CLIENT_CURRENT: 'Erro ao tentar atualizar o cliente atual do consultor',
     },
   },
   sucess: {},
-}
+};
 
-export default constants
+export default constants;

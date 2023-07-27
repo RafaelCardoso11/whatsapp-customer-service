@@ -1,55 +1,55 @@
-import { IMessage } from '../core/entities/Message'
-import { IWhatsappClient } from './interfaces/whatsappClient'
-import { IWhatsappSender } from './interfaces/whatsappSender'
+import { IMessage } from '../core/entities/Message';
+import { IWhatsappClient } from './interfaces/whatsappClient';
+import { IWhatsappSender } from './interfaces/whatsappSender';
 
 class SenderClientMockAdapter implements IWhatsappClient {
-  private whatsappSender: IWhatsappSender
+  private whatsappSender: IWhatsappSender;
 
   async initialize(): Promise<void> {
     const whatsappSender: IWhatsappSender = {
       sendText: function (to: string, content: string): Promise<object> {
-        return Promise.resolve({ to, content })
+        return Promise.resolve({ to, content });
       },
       sendImage: function (to: string, content: string): Promise<object> {
-        return Promise.resolve({ to, content })
+        return Promise.resolve({ to, content });
       },
       sendVoice: function (to: string, content: string): Promise<unknown> {
-        return Promise.resolve({ to, content })
+        return Promise.resolve({ to, content });
       },
       sendSticker: function (to: string, path: string): Promise<false | object> {
-        return Promise.resolve({ to, path })
+        return Promise.resolve({ to, path });
       },
       sendVideoAsGif: async function (to: string, path: string, filename: string, caption: string): Promise<void> {
-        await Promise.resolve({ to, path, filename, caption })
+        await Promise.resolve({ to, path, filename, caption });
       },
       sendDocument: function (to: string, path: string, filename?: string, caption?: string) {
-        return Promise.resolve({ to, path, filename, caption })
+        return Promise.resolve({ to, path, filename, caption });
       },
-    }
+    };
 
-    this.whatsappSender = whatsappSender
+    this.whatsappSender = whatsappSender;
   }
   onMessage(callback: (message: IMessage) => void): Promise<void> {
-    throw new Error('Method not implemented.')
+    throw new Error('Method not implemented.');
   }
   async sendText(to: string, content: string): Promise<object> {
-    return await this.whatsappSender.sendText(to, content)
+    return await this.whatsappSender.sendText(to, content);
   }
   async sendImage(to: string, content: string): Promise<object> {
-    return await this.whatsappSender.sendText(to, content)
+    return await this.whatsappSender.sendText(to, content);
   }
   async sendVoice(to: string, content: string): Promise<unknown> {
-    return await this.whatsappSender.sendVoice(to, content)
+    return await this.whatsappSender.sendVoice(to, content);
   }
   async sendSticker(to: string, path: string): Promise<false | object> {
-    return await this.whatsappSender.sendSticker(to, path)
+    return await this.whatsappSender.sendSticker(to, path);
   }
   async sendVideoAsGif(to: string, path: string, filename: string, caption: string): Promise<void> {
-    return await this.whatsappSender.sendVideoAsGif(to, path, filename, caption)
+    return await this.whatsappSender.sendVideoAsGif(to, path, filename, caption);
   }
   async sendDocument(to: string, path: string, filename?: string, caption?: string): Promise<unknown> {
-    return await this.whatsappSender.sendDocument(to, path, filename, caption)
+    return await this.whatsappSender.sendDocument(to, path, filename, caption);
   }
 }
 
-export default SenderClientMockAdapter
+export default SenderClientMockAdapter;

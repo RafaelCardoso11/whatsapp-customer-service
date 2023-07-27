@@ -1,13 +1,13 @@
-import { Client } from './Client'
+import { Client } from './Client';
 
 class QueueAttendiment {
-  client: Client
-  number?: number
-  date?: Date
+  client: Client;
+  number?: number;
+  date?: Date;
   constructor(client: Client) {
-    this.client = client
-    this.date = new Date()
+    this.client = client;
+    this.date = new Date();
   }
 }
 
-export { QueueAttendiment }
+export { QueueAttendiment };

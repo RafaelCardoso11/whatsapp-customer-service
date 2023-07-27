@@ -1,6 +1,6 @@
-import { Consultant } from '../../core/entities/Consultant'
-import { Client } from '../../core/entities/Client'
-import { ConsultantRepository } from './Consultant'
+import { Consultant } from '../../core/entities/Consultant';
+import { Client } from '../../core/entities/Client';
+import { ConsultantRepository } from './Consultant';
 import {
   ConsultantCreationError,
   ConsultantFindByIdClientError,
@@ -11,7 +11,7 @@ import {
   ConsultantGetAllError,
   ConsultantUpdateClientCurrentError,
   ConsultantUpdateError,
-} from '../errors/consultant'
+} from '../errors/consultant';
 
 class ConsultantRepositoryMemory implements ConsultantRepository {
   consultants: Consultant[] = [
@@ -35,87 +35,87 @@ class ConsultantRepositoryMemory implements ConsultantRepository {
       name: 'Wanderson Souza',
       telephone: '559196320036',
     },
-  ]
+  ];
 
   async create(consultant: Consultant): Promise<Consultant> {
     if (this.consultants.push(consultant)) {
-      return consultant
+      return consultant;
     }
 
-    throw new ConsultantCreationError()
+    throw new ConsultantCreationError();
   }
   async update(consultant: Consultant): Promise<Consultant> {
-    const indexConsultant = this.consultants.findIndex(({ _id }) => consultant._id === _id)
+    const indexConsultant = this.consultants.findIndex(({ _id }) => consultant._id === _id);
 
     if ((this.consultants[indexConsultant] = consultant)) {
-      return consultant
+      return consultant;
     }
 
-    throw new ConsultantUpdateError()
+    throw new ConsultantUpdateError();
   }
   async getById(id: string): Promise<Consultant> {
-    const consultantById = this.consultants.find(({ _id }) => String(_id) === id)
+    const consultantById = this.consultants.find(({ _id }) => String(_id) === id);
     if (consultantById) {
-      return consultantById
+      return consultantById;
     }
-    throw new ConsultantFindByIdError()
+    throw new ConsultantFindByIdError();
   }
   async getByTelephone(telephone: string): Promise<Consultant> {
-    const consultantByTelephone = this.consultants.find(({ telephone: TP }) => TP === telephone)
+    const consultantByTelephone = this.consultants.find(({ telephone: TP }) => TP === telephone);
 
     if (consultantByTelephone) {
-      return consultantByTelephone
+      return consultantByTelephone;
     }
-    throw new ConsultantFindByTelephoneError()
+    throw new ConsultantFindByTelephoneError();
   }
   async getAll(): Promise<Consultant[]> {
-    const consultants = this.consultants
+    const consultants = this.consultants;
     if (consultants) {
-      return consultants
+      return consultants;
     }
 
-    throw new ConsultantGetAllError()
+    throw new ConsultantGetAllError();
   }
   async findConsultantAvailable(): Promise<Consultant> {
-    const consultantAvailable = this.consultants.find(({ clientCurrent }) => !clientCurrent)
+    const consultantAvailable = this.consultants.find(({ clientCurrent }) => !clientCurrent);
     if (consultantAvailable) {
-      return consultantAvailable
+      return consultantAvailable;
     }
-    throw new ConsultantFindConsultantAvaiableError()
+    throw new ConsultantFindConsultantAvaiableError();
   }
   async findConsultantByIdClient(idClient: string): Promise<Consultant> {
-    const consultantByIdClient = this.consultants.find(({ clientCurrent }) => clientCurrent?._id === idClient)
+    const consultantByIdClient = this.consultants.find(({ clientCurrent }) => clientCurrent?._id === idClient);
 
     if (consultantByIdClient) {
-      return consultantByIdClient
+      return consultantByIdClient;
     }
 
-    throw new ConsultantFindByIdClientError()
+    throw new ConsultantFindByIdClientError();
   }
   async findByTelephoneClient(telephone: string): Promise<Consultant> {
     const consultantByTelephoneClient = this.consultants.find(
       ({ clientCurrent }) => clientCurrent?.telephone === telephone
-    )
+    );
 
     if (consultantByTelephoneClient) {
-      return consultantByTelephoneClient
+      return consultantByTelephoneClient;
     }
 
-    throw new ConsultantFindByTelephoneClientError()
+    throw new ConsultantFindByTelephoneClientError();
   }
 
   async updateClientCurrent(idConsultant: string, clientCurrent: Client): Promise<Consultant> {
-    const indexConsultantById = this.consultants.findIndex(({ _id }) => _id === idConsultant)
+    const indexConsultantById = this.consultants.findIndex(({ _id }) => _id === idConsultant);
 
-    const consultantByIndex = this.consultants[indexConsultantById]
-    consultantByIndex.clientCurrent = clientCurrent
+    const consultantByIndex = this.consultants[indexConsultantById];
+    consultantByIndex.clientCurrent = clientCurrent;
 
     if (consultantByIndex) {
-      return consultantByIndex
+      return consultantByIndex;
     }
 
-    throw new ConsultantUpdateClientCurrentError()
+    throw new ConsultantUpdateClientCurrentError();
   }
 }
 
-export { ConsultantRepositoryMemory }
+export { ConsultantRepositoryMemory };

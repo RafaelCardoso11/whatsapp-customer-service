@@ -1,4 +1,4 @@
-import { ILogger } from "./interfaces/logger";
+import { ILogger } from './interfaces/logger';
 
 class LoggerAdapter implements ILogger {
   private logger: ILogger;

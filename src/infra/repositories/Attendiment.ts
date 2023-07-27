@@ -1,21 +1,13 @@
-import { logger } from "../logger/logger";
-import { Attendiment } from "../../core/entities/Attendiment";
-import { AttendimentModel } from "../../core/schemas/AttendimentSchema";
-
-
+import { logger } from '../logger/logger';
+import { Attendiment } from '../../core/entities/Attendiment';
+import { AttendimentModel } from '../../core/schemas/AttendimentSchema';
 
 class AttendimentRepository {
-  async create(
-    attendiment: Attendiment
-  ): Promise<{ number: number; error?: unknown }> {
+  async create(attendiment: Attendiment): Promise<{ number: number; error?: unknown }> {
     try {
-      const lastAttendiment = await AttendimentModel.findOne()
-        .sort({ _id: -1 })
-        .exec();
+      const lastAttendiment = await AttendimentModel.findOne().sort({ _id: -1 }).exec();
 
-      const numberIncremented = lastAttendiment
-        ? lastAttendiment.number + 1
-        : 1;
+      const numberIncremented = lastAttendiment ? lastAttendiment.number + 1 : 1;
       const created = (
         await AttendimentModel.create({
           ...attendiment,
@@ -23,7 +15,7 @@ class AttendimentRepository {
         })
       ).toJSON() as Attendiment;
 
-      logger.info("Created attendiment number #", numberIncremented);
+      logger.info('Created attendiment number #', numberIncremented);
       return { ...created, number: numberIncremented };
     } catch (error) {
       return { number: 0, error };

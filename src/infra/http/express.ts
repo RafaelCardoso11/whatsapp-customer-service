@@ -1,7 +1,7 @@
-import express from "express";
-import routers from "./routes";
+import express from 'express';
+import routers from './routes';
 
-import { logger } from "../logger/logger";
+import { logger } from '../logger/logger';
 
 const server = express();
 

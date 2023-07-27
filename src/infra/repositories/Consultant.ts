@@ -1,6 +1,6 @@
-import { ConsultantModel } from '../../core/schemas/ConsultantSchema'
-import { Consultant } from '../../core/entities/Consultant'
-import { Client } from '../../core/entities/Client'
+import { ConsultantModel } from '../../core/schemas/ConsultantSchema';
+import { Consultant } from '../../core/entities/Consultant';
+import { Client } from '../../core/entities/Client';
 import {
   ConsultantCreationError,
   ConsultantFindByIdError,
@@ -11,71 +11,75 @@ import {
   ConsultantUpdateError,
   ConsultantGetAllError,
   ConsultantUpdateClientCurrentError,
-} from '../errors/consultant'
+} from '../errors/consultant';
 
 class ConsultantRepository {
   async create(consultant: Consultant): Promise<Consultant> {
     try {
-      const created = (await ConsultantModel.create(consultant)).toJSON() as Consultant
-      return created
+      const created = (await ConsultantModel.create(consultant)).toJSON() as Consultant;
+      return created;
     } catch (error) {
-      throw new ConsultantCreationError(JSON.stringify(error))
+      throw new ConsultantCreationError(JSON.stringify(error));
     }
   }
   async update(consultant: Consultant): Promise<Consultant> {
     try {
-      const updated = (await ConsultantModel.findOneAndUpdate(consultant)).toJSON() as Consultant
-      return updated
+      const updated = (await ConsultantModel.findOneAndUpdate(consultant)).toJSON() as Consultant;
+      return updated;
     } catch (error) {
-      throw new ConsultantUpdateError(JSON.stringify(error))
+      throw new ConsultantUpdateError(JSON.stringify(error));
     }
   }
   async getById(id: string): Promise<Consultant> {
     try {
-      const consultant = await ConsultantModel.findById(id).exec()
-      return consultant
+      const consultant = await ConsultantModel.findById(id).exec();
+      return consultant;
     } catch (error) {
-      throw new ConsultantFindByIdError(JSON.stringify(error))
+      throw new ConsultantFindByIdError(JSON.stringify(error));
     }
   }
   async getByTelephone(telephone: string): Promise<Consultant> {
     try {
-      const consultant = await ConsultantModel.findOne({ telephone }).exec()
-      return consultant
+      const consultant = await ConsultantModel.findOne({ telephone }).exec();
+      return consultant;
     } catch (error) {
-      throw new ConsultantFindByTelephoneError(JSON.stringify(error))
+      throw new ConsultantFindByTelephoneError(JSON.stringify(error));
     }
   }
   async getAll(): Promise<Consultant[]> {
     try {
-      const consultants = await ConsultantModel.find().exec()
-      return consultants.map((consultant) => consultant.toObject() as Consultant)
+      const consultants = await ConsultantModel.find().exec();
+      return consultants.map((consultant) => consultant.toObject() as Consultant);
     } catch (error) {
-      throw new ConsultantGetAllError(JSON.stringify(error))
+      throw new ConsultantGetAllError(JSON.stringify(error));
     }
   }
   async findConsultantAvailable(): Promise<Consultant> {
     try {
-      const consultantAvailable = await ConsultantModel.findOne({ clientCurrent: { $exists: false } }).exec()
-      return consultantAvailable.toObject()
+      const consultantAvailable = await ConsultantModel.findOne({
+        clientCurrent: { $exists: false },
+      }).exec();
+      return consultantAvailable.toObject();
     } catch (error) {
-      throw new ConsultantFindConsultantAvaiableError(JSON.stringify(error))
+      throw new ConsultantFindConsultantAvaiableError(JSON.stringify(error));
     }
   }
   async findConsultantByIdClient(idClient: string): Promise<Consultant> {
     try {
-      const consultantAvailable = await ConsultantModel.findOne({ clientCurrent: { _id: idClient } }).exec()
-      return consultantAvailable.toObject()
+      const consultantAvailable = await ConsultantModel.findOne({
+        clientCurrent: { _id: idClient },
+      }).exec();
+      return consultantAvailable.toObject();
     } catch (error) {
-      throw new ConsultantFindByIdClientError(JSON.stringify(error))
+      throw new ConsultantFindByIdClientError(JSON.stringify(error));
     }
   }
   async findByTelephoneClient(telephone: string): Promise<Consultant> {
     try {
-      const consultant = await ConsultantModel.findOne({ clientCurrent: { telephone } }).exec()
-      return consultant.toObject()
+      const consultant = await ConsultantModel.findOne({ clientCurrent: { telephone } }).exec();
+      return consultant.toObject();
     } catch (error) {
-      throw new ConsultantFindByTelephoneClientError(JSON.stringify(error))
+      throw new ConsultantFindByTelephoneClientError(JSON.stringify(error));
     }
   }
 
@@ -88,13 +92,13 @@ class ConsultantRepository {
             clientCurrent,
           },
         }
-      ).exec()
+      ).exec();
 
-      return consultantUpdated.toObject()
+      return consultantUpdated.toObject();
     } catch (error) {
-      throw new ConsultantUpdateClientCurrentError(JSON.stringify(error))
+      throw new ConsultantUpdateClientCurrentError(JSON.stringify(error));
     }
   }
 }
 
-export { ConsultantRepository }
+export { ConsultantRepository };

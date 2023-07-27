@@ -1,6 +1,5 @@
-
-import { Consultant } from "../../entities/Consultant";
-import { ICommand } from "./interfaces/command";
+import { Consultant } from '../../entities/Consultant';
+import { ICommand } from './interfaces/command';
 
 export class ChangeConsultantCommand implements ICommand {
   execute(consultant: Consultant): string {

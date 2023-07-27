@@ -1,4 +1,4 @@
-import Odm from '../../infra/odm/odm'
+import Odm from '../../infra/odm/odm';
 
 const ConsultantSchema = Odm.createSchema({
   _id: { type: Odm.Schema.Types.ObjectId, auto: true },
@@ -16,5 +16,5 @@ const ConsultantSchema = Odm.createSchema({
     nameSave: { type: 'string', required: true },
     telephone: { type: 'string', required: true },
   },
-})
-export const ConsultantModel = Odm.createModel('Consultants', ConsultantSchema)
+});
+export const ConsultantModel = Odm.createModel('Consultants', ConsultantSchema);

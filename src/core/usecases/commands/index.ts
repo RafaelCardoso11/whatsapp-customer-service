@@ -1,7 +1,6 @@
 import { formatterCommandInvalid } from '../../../helpers/formatterCommadInvalid';
 import { formatterCommandWithSuggestion } from '../../../helpers/formatterCommandWithSuggestion';
 import { Sender } from '../../../infra/whatsapp/Sender';
-import { AttendimentRepository } from '../../../infra/repositories/Attendiment';
 import { Consultant } from '../../entities/Consultant';
 import { ChangeConsultantCommand } from './ChangeConsultantUseCase';
 import { CloseSessionCommand } from './CloseSessionCommandUseCase';
@@ -14,10 +13,8 @@ export class CommandsUseCase {
   private commands: Map<string, ICommand> = new Map();
 
   constructor(private readonly sender: Sender) {
-    const attendimentRepository = new AttendimentRepository();
-
     this.registerCommand(Command.listCommands, new ListCommandsCommand(sender));
-    this.registerCommand(Command.CloseSession, new CloseSessionCommand(sender, attendimentRepository));
+    this.registerCommand(Command.CloseSession, new CloseSessionCommand(sender));
     this.registerCommand(Command.WaClientLink, new GenerateWhatsappLinkCommandCommand());
     this.registerCommand(Command.ChangeConsultant, new ChangeConsultantCommand());
   }

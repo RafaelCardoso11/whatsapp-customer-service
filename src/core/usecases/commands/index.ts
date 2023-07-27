@@ -1,3 +1,4 @@
+import { ECommand } from '../../../enums/ECommand';
 import { formatterCommandInvalid } from '../../../helpers/formatterCommadInvalid';
 import { formatterCommandWithSuggestion } from '../../../helpers/formatterCommandWithSuggestion';
 import { Sender } from '../../../infra/whatsapp/Sender';
@@ -6,17 +7,17 @@ import { ChangeConsultantCommand } from './ChangeConsultantUseCase';
 import { CloseSessionCommand } from './CloseSessionCommandUseCase';
 import { GenerateWhatsappLinkCommandCommand } from './GenerateWhatsappLinkCommandUseCase';
 import { ListCommandsCommand } from './ListCommandsUseCase';
-import { Command, CommandsWithDescription } from './commands';
+import { CommandsWithDescription } from './commands';
 import { ICommand } from './interfaces/command';
 
 export class CommandsUseCase {
   private commands: Map<string, ICommand> = new Map();
 
   constructor(private readonly sender: Sender) {
-    this.registerCommand(Command.listCommands, new ListCommandsCommand(sender));
-    this.registerCommand(Command.CloseSession, new CloseSessionCommand(sender));
-    this.registerCommand(Command.WaClientLink, new GenerateWhatsappLinkCommandCommand());
-    this.registerCommand(Command.ChangeConsultant, new ChangeConsultantCommand());
+    this.registerCommand(ECommand.listCommands, new ListCommandsCommand(sender));
+    this.registerCommand(ECommand.CloseSession, new CloseSessionCommand(sender));
+    this.registerCommand(ECommand.WaClientLink, new GenerateWhatsappLinkCommandCommand());
+    this.registerCommand(ECommand.ChangeConsultant, new ChangeConsultantCommand());
   }
 
   private async registerCommand(name: string, command: ICommand): Promise<void> {

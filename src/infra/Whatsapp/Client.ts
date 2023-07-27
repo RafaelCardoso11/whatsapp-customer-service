@@ -5,8 +5,8 @@ import { Client } from '../../core/entities/Client';
 import { Consultant } from '../../core/entities/Consultant';
 import { WhatsappClientDependencies } from './ClientDependencies';
 import { ESenderType } from '../../enums/ESenderType';
+import { EMessageType } from '../../enums/EMessageType';
 
-const CHAT_ID_STATUS = 'status@broadcast';
 class WhatsappClient implements IWhatsappClient {
   constructor(private readonly dependencies: WhatsappClientDependencies) {}
 
@@ -20,7 +20,7 @@ class WhatsappClient implements IWhatsappClient {
   }
   async onMessage(): Promise<void> {
     await this.dependencies.client.onMessage((message: IMessage) => {
-      if (message.chatId != CHAT_ID_STATUS) {
+      if (message.chatId != EMessageType.STATUS) {
         this.handleReceivedMessage(message);
       }
     });

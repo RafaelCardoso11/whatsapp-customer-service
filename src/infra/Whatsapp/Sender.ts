@@ -1,5 +1,5 @@
 import { IWhatsappSender } from '../../adapters/interfaces/whatsappSender';
-import { EMessageType } from '../../core/entities/Message';
+import { EMessageType } from '../../enums/EMessageType';
 
 export class Sender implements IWhatsappSender {
   constructor(private senderAdapter: IWhatsappSender) {}

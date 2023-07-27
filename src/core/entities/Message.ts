@@ -1,10 +1,3 @@
-export enum EMessageType {
-  VOICE = 'ptt',
-  TEXT = 'chat',
-  IMAGE = 'image',
-  STICKER = 'sticker',
-}
-
 interface MediaData {
   type: 'image';
   mediaStage: 'FETCHING';

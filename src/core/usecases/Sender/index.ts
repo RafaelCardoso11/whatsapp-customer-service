@@ -1,11 +1,11 @@
 import constants from '../../../constants';
+import { EMessageType } from '../../../enums/EMessageType';
 import { formatterMessageToClient } from '../../../helpers/formatterMessageToClient';
 import { formatterMessageToConsultant } from '../../../helpers/formatterMessageToConsultant';
 import { formattedMessageNewClient } from '../../../helpers/formatterMessagemToConsultantForNewClient';
 import { SendMessageError } from '../../../infra/errors/sender';
 import { Sender } from '../../../infra/whatsapp/Sender';
 import { Client } from '../../entities/Client';
-import { EMessageType } from '../../entities/Message';
 
 export class SenderUseCase {
   constructor(private readonly sender: Sender) {}

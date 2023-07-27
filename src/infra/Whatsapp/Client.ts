@@ -1,9 +1,10 @@
-import { EMessageType, IMessage } from '../../core/entities/Message';
+import { IMessage } from '../../core/entities/Message';
 import { logger } from '../logger/logger';
 import { IWhatsappClient } from '../../adapters/interfaces/whatsappClient';
 import { Client } from '../../core/entities/Client';
 import { Consultant } from '../../core/entities/Consultant';
 import { WhatsappClientDependencies } from './ClientDependencies';
+import { EMessageType } from '../../enums/EMessageType';
 
 const CHAT_ID_STATUS = 'status@broadcast';
 class WhatsappClient implements IWhatsappClient {

@@ -47,7 +47,7 @@ class ConsultantRepository {
     const consultantAvailable = await ConsultantModel.findOne({
       clientCurrent: { $exists: false },
     }).exec();
-    return consultantAvailable.toObject();
+    return consultantAvailable?.toObject();
   }
   async findConsultantByIdClient(idClient: string): Promise<Consultant | null> {
     try {

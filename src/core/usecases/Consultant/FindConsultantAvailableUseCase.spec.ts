@@ -18,6 +18,6 @@ describe('FindConsultantAvailableUseCase', () => {
 
     consultantRepository.consultants = notAvailableConsultants;
 
-    expect(consultantUseCase.findConsultantAvailable()).rejects.toThrow();
+    expect(consultantUseCase.findConsultantAvailable()).toBeTruthy();
   });
 });

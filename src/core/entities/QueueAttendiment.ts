@@ -6,7 +6,6 @@ class QueueAttendiment {
   date?: Date;
   constructor(client: Client) {
     this.client = client;
-    this.date = new Date();
   }
 }
 

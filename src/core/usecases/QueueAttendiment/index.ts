@@ -6,7 +6,7 @@ export class QueueAttendimentUseCase {
   constructor(private readonly queueAttendiment: QueueAttendimentRepository) {}
 
   public async add(client: Client): Promise<QueueAttendimentEntity> {
-    return await this.queueAttendiment.add({ client });
+    return await this.queueAttendiment.add({ client, date: new Date() });
   }
 
   public async remove(idAttendiment: string): Promise<QueueAttendimentEntity> {

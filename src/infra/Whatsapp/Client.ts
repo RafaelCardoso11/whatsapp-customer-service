@@ -74,7 +74,9 @@ class WhatsappClient implements IWhatsappClient {
         consultorInAttendimentWithClient.telephone
       );
     } else {
-      const clientInQueueAttendiment = await this.dependencies.queueAttendimentUseCase.clientInAttendiment(telephone);
+      const clientInQueueAttendiment = await this.dependencies.queueAttendimentUseCase.clientInQueueAttendiment(
+        telephone
+      );
       if (!clientInQueueAttendiment) {
         await this.dependencies.senderUseCase.newAttendiment(telephone);
         await this.handleNewClientMessage(nameSave, name, telephone, content);

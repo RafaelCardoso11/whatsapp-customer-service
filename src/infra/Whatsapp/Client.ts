@@ -30,7 +30,7 @@ class WhatsappClient implements IWhatsappClient {
     const {
       sender: { telephone },
     } = message;
-
+    logger.info('NOVA MENSAGEM!!!');
     const consultant = await this.dependencies.consultantUseCase.CheckIsConsultantByTelephone(telephone);
 
     if (consultant) {
@@ -40,11 +40,19 @@ class WhatsappClient implements IWhatsappClient {
     }
   }
   private async handleConsultantMessage(consultant: Consultant, message: IMessage) {
+    logger.info('NOVA MENSAGEM DO CONSULTOR - ' + consultant.name);
+
     const initWithCommand = /^#\//;
     const isCommand = initWithCommand.test(message.content);
 
     if (isCommand) {
       await this.dependencies.commandsUseCase.executeCommand(consultant, message.content);
+    } else {
+      await this.dependencies.senderUseCase.sendFormattedMessageToClient(
+        String(consultant.clientCurrent?.telephone),
+        consultant.name,
+        message.content
+      );
     }
   }
   private async handleClientMessage(message: IMessage) {
@@ -77,7 +85,7 @@ class WhatsappClient implements IWhatsappClient {
       name,
       telephone,
     };
-
+    logger.info('NOVO CLIENTE - ' + name);
     const consultantAvaiable = await this.dependencies.consultantUseCase.findConsultantAvailable();
 
     if (consultantAvaiable) {

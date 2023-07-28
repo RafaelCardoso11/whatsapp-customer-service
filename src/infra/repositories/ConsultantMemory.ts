@@ -1,17 +1,6 @@
 import { Consultant } from '../../core/entities/Consultant';
 import { Client } from '../../core/entities/Client';
 import { ConsultantRepository } from './Consultant';
-import {
-  ConsultantCreationError,
-  ConsultantFindByIdClientError,
-  ConsultantFindByIdError,
-  ConsultantFindByTelephoneClientError,
-  ConsultantFindByTelephoneError,
-  ConsultantFindConsultantAvaiableError,
-  ConsultantGetAllError,
-  ConsultantUpdateClientCurrentError,
-  ConsultantUpdateError,
-} from '../errors/consultant';
 
 class ConsultantRepositoryMemory implements ConsultantRepository {
   consultants: Consultant[] = [
@@ -38,70 +27,44 @@ class ConsultantRepositoryMemory implements ConsultantRepository {
   ];
 
   async create(consultant: Consultant): Promise<Consultant> {
-    if (this.consultants.push(consultant)) {
-      return consultant;
-    }
-
-    throw new ConsultantCreationError();
+    this.consultants.push(consultant);
+    return consultant;
   }
   async update(consultant: Consultant): Promise<Consultant> {
     const indexConsultant = this.consultants.findIndex(({ _id }) => consultant._id === _id);
 
-    if ((this.consultants[indexConsultant] = consultant)) {
-      return consultant;
-    }
-
-    throw new ConsultantUpdateError();
+    return (this.consultants[indexConsultant] = consultant);
   }
   async getById(id: string): Promise<Consultant> {
     const consultantById = this.consultants.find(({ _id }) => String(_id) === id);
-    if (consultantById) {
-      return consultantById;
-    }
-    throw new ConsultantFindByIdError();
+
+    return consultantById as Consultant;
   }
   async getByTelephone(telephone: string): Promise<Consultant> {
     const consultantByTelephone = this.consultants.find(({ telephone: TP }) => TP === telephone);
 
-    if (consultantByTelephone) {
-      return consultantByTelephone;
-    }
-    throw new ConsultantFindByTelephoneError();
+    return consultantByTelephone as Consultant;
   }
   async getAll(): Promise<Consultant[]> {
     const consultants = this.consultants;
-    if (consultants) {
-      return consultants;
-    }
 
-    throw new ConsultantGetAllError();
+    return consultants;
   }
   async findConsultantAvailable(): Promise<Consultant> {
     const consultantAvailable = this.consultants.find(({ clientCurrent }) => !clientCurrent);
-    if (consultantAvailable) {
-      return consultantAvailable;
-    }
-    throw new ConsultantFindConsultantAvaiableError();
+
+    return consultantAvailable as Consultant;
   }
   async findConsultantByIdClient(idClient: string): Promise<Consultant> {
     const consultantByIdClient = this.consultants.find(({ clientCurrent }) => clientCurrent?._id === idClient);
-
-    if (consultantByIdClient) {
-      return consultantByIdClient;
-    }
-
-    throw new ConsultantFindByIdClientError();
+    return consultantByIdClient as Consultant;
   }
   async findByTelephoneClient(telephone: string): Promise<Consultant> {
     const consultantByTelephoneClient = this.consultants.find(
       ({ clientCurrent }) => clientCurrent?.telephone === telephone
     );
 
-    if (consultantByTelephoneClient) {
-      return consultantByTelephoneClient;
-    }
-
-    throw new ConsultantFindByTelephoneClientError();
+    return consultantByTelephoneClient as Consultant;
   }
 
   async updateClientCurrent(idConsultant: string, clientCurrent: Client): Promise<Consultant> {
@@ -110,11 +73,7 @@ class ConsultantRepositoryMemory implements ConsultantRepository {
     const consultantByIndex = this.consultants[indexConsultantById];
     consultantByIndex.clientCurrent = clientCurrent;
 
-    if (consultantByIndex) {
-      return consultantByIndex;
-    }
-
-    throw new ConsultantUpdateClientCurrentError();
+    return consultantByIndex;
   }
 }
 

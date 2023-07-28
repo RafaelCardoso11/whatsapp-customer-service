@@ -3,7 +3,7 @@ import { QueueAttendiment } from '../../core/entities/QueueAttendiment';
 import { QueueAttendimentModel } from '../../core/schemas/QueueAttendiment';
 
 class QueueAttendimentRepository {
-  async add({ client, date }: QueueAttendiment): Promise<QueueAttendiment> {
+  async add({ client, date, message }: QueueAttendiment): Promise<QueueAttendiment> {
     const lastAttendiment = await QueueAttendimentModel.findOne().sort({ _id: -1 }).exec();
 
     const numberIncremented = lastAttendiment ? lastAttendiment.number + 1 : 1;
@@ -13,6 +13,7 @@ class QueueAttendimentRepository {
         client,
         date,
         number: numberIncremented,
+        messages: [message],
       })
     ).toJSON() as QueueAttendiment;
 
@@ -24,6 +25,21 @@ class QueueAttendimentRepository {
 
     logger.info('Removed attendiment to queue. Number #', removed.number);
     return removed;
+  }
+
+  async getByTelephone(telephoneClient: string): Promise<QueueAttendiment> {
+    const attendimentInQueue = await QueueAttendimentModel.findOne({ 'client.telephone': telephoneClient }).exec();
+
+    return attendimentInQueue || null;
+  }
+  async updateMessages(telephoneClient: string, contentMessage: string): Promise<QueueAttendiment> {
+    const updated = await QueueAttendimentModel.findOneAndUpdate(
+      { 'client.telephone': telephoneClient },
+      { $push: { messagens: contentMessage } },
+      { new: true }
+    );
+
+    return updated;
   }
 }
 

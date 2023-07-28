@@ -5,11 +5,20 @@ import { QueueAttendiment as QueueAttendimentEntity } from '../../entities/Queue
 export class QueueAttendimentUseCase {
   constructor(private readonly queueAttendiment: QueueAttendimentRepository) {}
 
-  public async add(client: Client): Promise<QueueAttendimentEntity> {
-    return await this.queueAttendiment.add({ client, date: new Date() });
+  public async add(client: Client, message: string): Promise<QueueAttendimentEntity> {
+    return await this.queueAttendiment.add({ client, date: new Date(), message });
   }
 
   public async remove(idAttendiment: string): Promise<QueueAttendimentEntity> {
     return await this.queueAttendiment.remove(idAttendiment);
+  }
+  public async clientInAttendiment(telephoneClient: string): Promise<QueueAttendimentEntity> {
+    return await this.queueAttendiment.getByTelephone(telephoneClient);
+  }
+  public async saveMessageInAttendiment(
+    telephoneClient: string,
+    contentMessage: string
+  ): Promise<QueueAttendimentEntity> {
+    return await this.queueAttendiment.updateMessages(telephoneClient, contentMessage);
   }
 }

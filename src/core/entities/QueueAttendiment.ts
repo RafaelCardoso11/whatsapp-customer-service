@@ -4,8 +4,10 @@ class QueueAttendiment {
   client: Client;
   number?: number;
   date?: Date;
-  constructor(client: Client) {
+  message: string;
+  constructor(client: Client, message: string) {
     this.client = client;
+    this.message = message;
   }
 }
 

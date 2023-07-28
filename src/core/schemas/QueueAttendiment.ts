@@ -5,6 +5,7 @@ const QueueAttendimentSchema = Odm.createSchema({
   client: { type: 'object', required: true },
   number: { type: 'number', unique: true },
   date: { type: 'date', required: true },
+  messagens: { type: 'array', required: true },
 });
 
 export const QueueAttendimentModel = Odm.createModel('queue-Attendiments', QueueAttendimentSchema);

@@ -30,7 +30,6 @@ class WhatsappClient implements IWhatsappClient {
     const {
       sender: { telephone },
     } = message;
-    logger.info('NOVA MENSAGEM!!!');
     const consultant = await this.dependencies.consultantUseCase.CheckIsConsultantByTelephone(telephone);
 
     if (consultant) {
@@ -60,7 +59,7 @@ class WhatsappClient implements IWhatsappClient {
       sender: { telephone, name: nameSave, pushname: name },
       content,
     } = message;
-
+    logger.info('NOVA MENSAGEM DO CLIENT - ' + name);
     const consultorInAttendimentWithClient = await this.dependencies.consultantUseCase.findByTelephoneClient(telephone);
 
     if (consultorInAttendimentWithClient) {

@@ -5,7 +5,6 @@ import { Client } from '../../core/entities/Client';
 import { Consultant } from '../../core/entities/Consultant';
 import { WhatsappClientDependencies } from './ClientDependencies';
 import { ESenderType } from '../../enums/ESenderType';
-import { EMessageType } from '../../enums/EMessageType';
 
 class WhatsappClient implements IWhatsappClient {
   constructor(private readonly dependencies: WhatsappClientDependencies) {}
@@ -20,7 +19,8 @@ class WhatsappClient implements IWhatsappClient {
   }
   async onMessage(): Promise<void> {
     await this.dependencies.client.onMessage((message: IMessage) => {
-      if (message.chatId != EMessageType.STATUS) {
+      const isMessage = /\d{12}@c.us/.test(message.chatId);
+      if (isMessage) {
         this.handleReceivedMessage(message);
       }
     });
@@ -75,8 +75,13 @@ class WhatsappClient implements IWhatsappClient {
         consultorInAttendimentWithClient.telephone
       );
     } else {
-      await this.dependencies.senderUseCase.newAttendiment(telephone);
-      await this.handleNewClientMessage(nameSave, name, telephone, content);
+      const clientInQueueAttendiment = await this.dependencies.queueAttendimentUseCase.clientInAttendiment(telephone);
+      if (!clientInQueueAttendiment) {
+        await this.dependencies.senderUseCase.newAttendiment(telephone);
+        await this.handleNewClientMessage(nameSave, name, telephone, content);
+      }
+      await this.dependencies.queueAttendimentUseCase.saveMessageInAttendiment(telephone, content);
+      logger.info(`CLIENTE ${name} AGUARDANDO ATENDIMENTO NA FILA`);
     }
   }
   private async handleNewClientMessage(nameSave: string, name: string, telephone: string, contentMessage: string) {
@@ -103,7 +108,8 @@ class WhatsappClient implements IWhatsappClient {
         consultantAvaiable.telephone
       );
     } else {
-      await this.dependencies.queueAttendimentUseCase.add(clientCurrent);
+      const isAddToQueue = await this.dependencies.queueAttendimentUseCase.add(clientCurrent, contentMessage);
+      if (isAddToQueue) logger.info(`CLIENT ${name} ADICIONADO NA FILA DE ATENDIMENTO`);
     }
   }
 }

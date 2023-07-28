@@ -18,7 +18,7 @@ const constants = {
     consultant: {
       NO_AVAILABLE_CONSULTANT: 'Erro ao tentar encontrar um consultor disponível',
       FAILED_TO_CREATE_CONSULTANT: 'Erro ao tentar criar um consultor',
-      FAILED_TO_UPDATED_CONSULTANT: 'Erro ao atualizaro o consultor',
+      FAILED_TO_UPDATED_CONSULTANT: 'Erro ao atualizar o consultor',
       FAILED_TO_REGISTER_CLIENT_FOR_CONSULTANT: 'Erro ao cadastrar o cliente no consultor',
       CONSULTANT_NOT_FOUND: 'Consultor não encontrado',
       FAILED_TO_FIND_BY_ID: 'Erro ao tentar encontrar um consultor por ID',

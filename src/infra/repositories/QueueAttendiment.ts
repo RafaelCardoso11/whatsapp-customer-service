@@ -3,19 +3,19 @@ import { QueueAttendiment } from '../../core/entities/QueueAttendiment';
 import { QueueAttendimentModel } from '../../core/schemas/QueueAttendiment';
 
 class QueueAttendimentRepository {
-  async add({ client, date, message }: QueueAttendiment): Promise<QueueAttendiment> {
+  async add({ client, message }: QueueAttendiment): Promise<QueueAttendiment> {
     const lastAttendiment = await QueueAttendimentModel.findOne().sort({ _id: -1 }).exec();
 
     const numberIncremented = lastAttendiment ? lastAttendiment.number + 1 : 1;
 
-    const created = (
-      await QueueAttendimentModel.create({
-        client,
-        date,
-        number: numberIncremented,
-        messages: [message],
-      })
-    ).toJSON() as QueueAttendiment;
+    const attendiment = {
+      client,
+      date: new Date(),
+      number: numberIncremented,
+      messages: [message],
+    };
+
+    const created = (await QueueAttendimentModel.create(attendiment)).toJSON() as QueueAttendiment;
 
     logger.info('Created attendiment in queue. Number #', numberIncremented);
     return created;
@@ -33,9 +33,11 @@ class QueueAttendimentRepository {
     return attendimentInQueue || null;
   }
   async updateMessages(telephoneClient: string, contentMessage: string): Promise<QueueAttendiment> {
+    const message = { date: new Date(), content: contentMessage };
+
     const updated = await QueueAttendimentModel.findOneAndUpdate(
       { 'client.telephone': telephoneClient },
-      { $push: { messagens: contentMessage } },
+      { $push: { messagens: message } },
       { new: true }
     );
 

@@ -1,5 +1,5 @@
 import { Consultant } from '../../../entities/Consultant';
 
 export interface ICommand {
-  execute(consultant?: Consultant, contentNextMessageClient?: () => Promise<string>): Promise<void> | string;
+  execute(consultant?: Consultant): Promise<boolean>;
 }

@@ -8,6 +8,7 @@ import { QueueAttendimentRepository } from '../repositories/QueueAttendiment';
 import WhatsappClient from './Client';
 import { Sender } from './Sender';
 import { WhatsappClientDependencies } from './ClientDependencies';
+import { AttendimentRepository } from '../repositories/Attendiment';
 
 export class WhatsappClientFactory {
   static create(): WhatsappClient {
@@ -16,9 +17,10 @@ export class WhatsappClientFactory {
 
     const consultantRepository = new ConsultantRepository();
     const queueAttendimentRepository = new QueueAttendimentRepository();
+    const attendimentRepository = new AttendimentRepository();
 
-    const commandsUseCase = new CommandsUseCase(sender);
-    const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository);
+    const commandsUseCase = new CommandsUseCase(sender, consultantRepository, attendimentRepository);
+    const queueAttendimentUseCase = new QueueAttendimentUseCase(queueAttendimentRepository, consultantRepository);
     const consultantUseCase = new ConsultantUseCase(consultantRepository);
     const senderUseCase = new SenderUseCase(sender);
 

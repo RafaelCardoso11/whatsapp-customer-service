@@ -9,6 +9,7 @@ import { WhatsappClientDependencies } from './ClientDependencies';
 import { ConsultantRepositoryMemory } from '../repositories/ConsultantMemory';
 import SenderClientMockAdapter from '../../adapters/SenderClientMockAdapter';
 import { WhatsappClientFactory } from './ClientFactory';
+import { AttendimentRepository } from '../repositories/Attendiment';
 
 export class WhatsappClientMemoryFactory implements WhatsappClientFactory {
   static senderUseCase: SenderUseCase;
@@ -19,6 +20,7 @@ export class WhatsappClientMemoryFactory implements WhatsappClientFactory {
   static queueAttendimentRepository: QueueAttendimentRepository;
   static commandsUseCase: CommandsUseCase;
   static consultantUseCase: ConsultantUseCase;
+  static attendimentRepository: AttendimentRepository;
 
   static create(): WhatsappClient {
     this.clientMockAdapter = new SenderClientMockAdapter();
@@ -26,9 +28,13 @@ export class WhatsappClientMemoryFactory implements WhatsappClientFactory {
 
     this.consultantRepository = new ConsultantRepositoryMemory();
     this.queueAttendimentRepository = new QueueAttendimentRepository();
+    this.attendimentRepository = new AttendimentRepository();
 
-    this.queueAttendimentUseCase = new QueueAttendimentUseCase(this.queueAttendimentRepository);
-    this.commandsUseCase = new CommandsUseCase(this.sender);
+    this.queueAttendimentUseCase = new QueueAttendimentUseCase(
+      this.queueAttendimentRepository,
+      this.consultantRepository
+    );
+    this.commandsUseCase = new CommandsUseCase(this.sender, this.consultantRepository, this.attendimentRepository);
     this.consultantUseCase = new ConsultantUseCase(this.consultantRepository);
     this.senderUseCase = new SenderUseCase(this.sender);
 

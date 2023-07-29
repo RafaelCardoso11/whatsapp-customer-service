@@ -1,7 +1,7 @@
 import { Client } from './Client';
 
 class Consultant {
-  _id?: string;
+  _id: string;
   name: string;
   telephone: string;
   clientCurrent?: Client;

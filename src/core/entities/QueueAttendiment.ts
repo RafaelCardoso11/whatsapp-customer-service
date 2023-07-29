@@ -7,6 +7,7 @@ interface message {
 }
 
 class QueueAttendiment {
+  _id: string;
   client: Client;
   number?: number;
   date?: Date;

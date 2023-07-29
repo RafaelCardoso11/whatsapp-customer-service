@@ -10,7 +10,11 @@ class Odm<TSchema> implements IOdm<Schema, Model<any>> {
     this.Schema = schema;
   }
   async connection<Options extends ConnectOptions>(uri: string, options?: Options): Promise<void> {
-    await this.odm.connection(uri, options);
+    try {
+      await this.odm.connection(uri, options);
+    } catch (error) {
+      throw new Error('error creating connection' + error);
+    }
   }
   async disconnect(): Promise<void> {
     await this.disconnect();

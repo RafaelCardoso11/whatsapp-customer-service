@@ -22,6 +22,7 @@ describe('SendMessageToConsultantUseCase', () => {
     client.nameSave = 'Rafael Cliente';
 
     const consultant: Consultant = {
+      _id: '1',
       name: 'Rafael Cardoso',
       telephone: '91996320038',
     };

@@ -24,6 +24,7 @@ describe('SendMessageToClientUseCase', () => {
       telephone: '9196320038',
     };
     const consultant: Consultant = {
+      _id: '1',
       name: 'Rebeca',
       telephone: '9196320038',
     };

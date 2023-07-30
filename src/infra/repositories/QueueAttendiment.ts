@@ -2,8 +2,16 @@ import { logger } from '../logger/logger';
 import { QueueAttendiment } from '../../core/entities/QueueAttendiment';
 import { QueueAttendimentModel } from '../../core/schemas/QueueAttendiment';
 
+interface IAddInQueue extends Partial<QueueAttendiment> {
+  _id?: string;
+}
 class QueueAttendimentRepository {
-  async add({ client, message }: QueueAttendiment): Promise<QueueAttendiment> {
+  async getTheFistInQueue(): Promise<QueueAttendiment> {
+    const theFistInQueue = (await QueueAttendimentModel.findOne({ _id: -1 })).toJSON() as QueueAttendiment;
+
+    return theFistInQueue;
+  }
+  async add({ client, message }: IAddInQueue): Promise<QueueAttendiment> {
     const lastAttendiment = await QueueAttendimentModel.findOne().sort({ _id: -1 }).exec();
 
     const numberIncremented = lastAttendiment ? lastAttendiment.number + 1 : 1;
@@ -20,7 +28,7 @@ class QueueAttendimentRepository {
     logger.info('Created attendiment in queue. Number #', numberIncremented);
     return created;
   }
-  async remove(idAttendiment: string): Promise<QueueAttendiment> {
+  async removeById(idAttendiment: string): Promise<QueueAttendiment> {
     const removed = (await QueueAttendimentModel.findByIdAndRemove(idAttendiment)).toJSON() as QueueAttendiment;
 
     logger.info('Removed attendiment to queue. Number #', removed.number);

@@ -1,14 +1,21 @@
+import { Sender } from '../../../infra/whatsapp/Sender';
 import { Consultant } from '../../entities/Consultant';
 import { ICommand } from './interfaces/command';
 
 export class GenerateWhatsappLinkCommandCommand implements ICommand {
-  execute(consultant: Consultant): string {
+  constructor(private readonly sender: Sender) {}
+  async execute(consultant: Consultant): Promise<boolean> {
     if (consultant.clientCurrent?._id) {
-      const numberClient = consultant.clientCurrent.telephone;
+      const telephoneClient = consultant.clientCurrent.telephone;
 
-      return `*APENAS POR NECESSIDADE* : https://api.whatsapp.com/send?phone=${numberClient}`;
-    } else {
-      return 'Nenhum cliente em seu CHAT';
+      if (telephoneClient) {
+        const UrlWhatsappWithPhoneCliente = 'https://api.whatsapp.com/send?phone=' + telephoneClient;
+
+        await this.sender.sendText(consultant.telephone, `*APENAS POR NECESSIDADE* : ${UrlWhatsappWithPhoneCliente}`);
+        return true;
+      }
     }
+    await this.sender.sendText(consultant.telephone, 'Nenhum cliente em seu CHAT');
+    return false;
   }
 }

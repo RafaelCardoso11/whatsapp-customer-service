@@ -1,6 +1,8 @@
 import { ECommand } from '../../../enums/ECommand';
 import { formatterCommandInvalid } from '../../../helpers/formatterCommadInvalid';
 import { formatterCommandWithSuggestion } from '../../../helpers/formatterCommandWithSuggestion';
+import { AttendimentRepository } from '../../../infra/repositories/Attendiment';
+import { ConsultantRepository } from '../../../infra/repositories/Consultant';
 import { Sender } from '../../../infra/whatsapp/Sender';
 import { Consultant } from '../../entities/Consultant';
 import { ChangeConsultantCommand } from './ChangeConsultantUseCase';
@@ -13,10 +15,17 @@ import { ICommand } from './interfaces/command';
 export class CommandsUseCase {
   private commands: Map<string, ICommand> = new Map();
 
-  constructor(private readonly sender: Sender) {
+  constructor(
+    private readonly sender: Sender,
+    readonly consultantRepository: ConsultantRepository,
+    readonly attendimentRepository: AttendimentRepository
+  ) {
     this.registerCommand(ECommand.listCommands, new ListCommandsCommand(sender));
-    this.registerCommand(ECommand.CloseSession, new CloseSessionCommand(sender));
-    this.registerCommand(ECommand.WaClientLink, new GenerateWhatsappLinkCommandCommand());
+    this.registerCommand(
+      ECommand.CloseSession,
+      new CloseSessionCommand(consultantRepository, attendimentRepository, sender)
+    );
+    this.registerCommand(ECommand.WaClientLink, new GenerateWhatsappLinkCommandCommand(sender));
     this.registerCommand(ECommand.ChangeConsultant, new ChangeConsultantCommand());
   }
 
@@ -24,11 +33,11 @@ export class CommandsUseCase {
     this.commands.set(name, command);
   }
 
-  async executeCommand(consultant: Consultant, command: string): Promise<void> {
+  async executeCommand(consultant: Consultant, command: string): Promise<boolean> {
     const getCommand = this.commands.get(command);
 
     if (getCommand) {
-      await getCommand.execute(consultant);
+      return await getCommand.execute(consultant);
     } else {
       await this.sender.sendText(consultant.telephone, formatterCommandInvalid(command));
 
@@ -37,6 +46,7 @@ export class CommandsUseCase {
       if (commandSuggestion) {
         await this.sender.sendText(consultant.telephone, commandSuggestion);
       }
+      return false;
     }
   }
 

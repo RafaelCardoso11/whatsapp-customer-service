@@ -6,8 +6,12 @@ import { ICommand } from './interfaces/command';
 export class ListCommandsCommand implements ICommand {
   constructor(private readonly sender: Sender) {}
 
-  async execute(consultant: Consultant): Promise<void> {
-    await this.sender.sendText(consultant.telephone, this.listCommands());
+  async execute(consultant: Consultant): Promise<boolean> {
+    const sendedListCommands = await this.sender.sendText(consultant.telephone, this.listCommands());
+    if (sendedListCommands) {
+      return true;
+    }
+    return false;
   }
 
   private listCommands(): string {

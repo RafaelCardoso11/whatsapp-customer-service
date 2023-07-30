@@ -4,7 +4,8 @@ import { IWhatsappClient } from '../../adapters/interfaces/whatsappClient';
 import { Client } from '../../core/entities/Client';
 import { Consultant } from '../../core/entities/Consultant';
 import { WhatsappClientDependencies } from './ClientDependencies';
-import { ESenderType } from '../../enums/ESenderType';
+import ResponseEmitterSingleton from '../emitters/ResponseEmitterSingleton';
+import { ECommand } from '../../enums/ECommand';
 
 class WhatsappClient implements IWhatsappClient {
   constructor(private readonly dependencies: WhatsappClientDependencies) {}
@@ -44,14 +45,28 @@ class WhatsappClient implements IWhatsappClient {
     const initWithCommand = /^#\//;
     const isCommand = initWithCommand.test(message.content);
 
+    ResponseEmitterSingleton.emit(`message:${consultant.telephone}`, message.content);
+
     if (isCommand) {
-      await this.dependencies.commandsUseCase.executeCommand(consultant, message.content);
+      const executed = await this.dependencies.commandsUseCase.executeCommand(consultant, message.content);
+
+      if (executed) {
+        logger.info(`CONSULTOR ${consultant.name.toUpperCase()} EXECUTOU O COMANDO: ` + message.content);
+        switch (message.content) {
+          case ECommand.CloseSession:
+            this.dependencies.queueAttendimentUseCase.removeQueueAttendimentAndRemoveClientCurrent(consultant._id);
+            break;
+        }
+        return;
+      }
     } else {
-      await this.dependencies.senderUseCase.sendFormattedMessageToClient(
-        String(consultant.clientCurrent?.telephone),
-        consultant.name,
-        message.content
-      );
+      if (consultant.clientCurrent?.telephone) {
+        await this.dependencies.senderUseCase.sendFormattedMessageToClient(
+          consultant.clientCurrent.telephone,
+          consultant.name,
+          message.content
+        );
+      }
     }
   }
   private async handleClientMessage(message: IMessage) {
@@ -96,12 +111,12 @@ class WhatsappClient implements IWhatsappClient {
 
     if (consultantAvaiable) {
       await this.dependencies.consultantUseCase.updateConsultantAvailableWithNewClient(
-        consultantAvaiable._id as string,
+        consultantAvaiable._id,
         clientCurrent
       );
       await this.dependencies.senderUseCase.sendFormattedMessageToConsultantForNewClient(
-        ESenderType.TEXT,
-        consultantAvaiable.telephone
+        consultantAvaiable.telephone,
+        clientCurrent.name
       );
       await this.dependencies.senderUseCase.sendFormattedMessageToConsultant(
         clientCurrent,

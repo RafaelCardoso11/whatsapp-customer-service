@@ -75,6 +75,12 @@ class ConsultantRepositoryMemory implements ConsultantRepository {
 
     return consultantByIndex;
   }
+  async removeClientCurrentPropertyFromConsultant(idConsultant: string): Promise<void> {
+    const indexConsultantById = this.consultants.findIndex(({ _id }) => _id === idConsultant);
+
+    const consultantByIndex = this.consultants[indexConsultantById];
+    consultantByIndex.clientCurrent = undefined;
+  }
 }
 
 export { ConsultantRepositoryMemory };

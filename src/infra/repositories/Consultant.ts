@@ -2,10 +2,14 @@ import { ConsultantModel } from '../../core/schemas/ConsultantSchema';
 import { Consultant } from '../../core/entities/Consultant';
 import { Client } from '../../core/entities/Client';
 
+interface ICreateConsultant extends Partial<Consultant> {
+  name: string;
+  telephone: string;
+}
 class ConsultantRepository {
-  async create(consultant: Consultant): Promise<Consultant | null> {
+  async create({ name, telephone }: ICreateConsultant): Promise<Consultant | null> {
     try {
-      const created = (await ConsultantModel.create(consultant)).toJSON() as Consultant;
+      const created = (await ConsultantModel.create({ name, telephone })).toJSON() as Consultant;
       return created;
     } catch (error) {
       return null;
@@ -80,6 +84,14 @@ class ConsultantRepository {
     ).exec();
 
     return consultantUpdated.toObject();
+  }
+  async removeClientCurrentPropertyFromConsultant(idConsultant: string): Promise<void> {
+    const updatedConsultant = await ConsultantModel.findByIdAndUpdate(
+      { _id: idConsultant },
+      { $unset: { clientCurrent: 1 } },
+      { new: true }
+    );
+    await updatedConsultant.save();
   }
 }
 

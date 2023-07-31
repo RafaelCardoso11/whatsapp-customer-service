@@ -1,0 +1,6 @@
+{
+  "NO_CONSULTANT_AVAIABLE_FOR_CHANGE": " `Nenhum consultor disponível para que seja trocado`",
+  "ARE_YOU_NOT_ATTENDIMENTO_FOR_CHANGE": " 'Você não está em um atendimento para troca-lo!'",
+  "ATTENDIMENT_SEND_TO_OUTHER_CONSULTANT": " '*O atendimento foi enviado para o Consultor {consultantAvaiableName}*'",
+  "DO_YOU_RECEPT_TO_NEW_ATTENDIMENT": " '*Você recebeu um novo atendimento de um outro Consultor.*'"
+}

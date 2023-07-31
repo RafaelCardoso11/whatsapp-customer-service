@@ -1,3 +1,4 @@
+import { ResponseClientEmitter } from '../../../infra/emitters/ResponseClient';
 import { ResponseConsultantEmitter } from '../../../infra/emitters/ResponseConsultant';
 import { Sender } from '../../../infra/whatsapp/Sender';
 import { Consultant } from '../../entities/Consultant';
@@ -13,6 +14,10 @@ export abstract class WaitMessage implements ICommand {
   ): Promise<string> {
     const response = new ResponseConsultantEmitter().waitMessage(consultantTelephone, MAX_TIME_OUT, rejectValue);
 
+    return response;
+  }
+  async waitForResponseFromClient(clientTelephone: string, MAX_TIME_OUT: number, rejectValue: string): Promise<string> {
+    const response = new ResponseClientEmitter().waitMessage(clientTelephone, MAX_TIME_OUT, rejectValue);
     return response;
   }
 

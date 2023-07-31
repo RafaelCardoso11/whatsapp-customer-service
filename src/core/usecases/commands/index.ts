@@ -26,7 +26,7 @@ export class CommandsUseCase {
       new CloseSessionCommand(consultantRepository, attendimentRepository, sender)
     );
     this.registerCommand(ECommand.WaClientLink, new GenerateWhatsappLinkCommandCommand(sender));
-    this.registerCommand(ECommand.ChangeConsultant, new ChangeConsultantCommand());
+    this.registerCommand(ECommand.ChangeConsultant, new ChangeConsultantCommand(consultantRepository, sender));
   }
 
   private async registerCommand(name: string, command: ICommand): Promise<void> {

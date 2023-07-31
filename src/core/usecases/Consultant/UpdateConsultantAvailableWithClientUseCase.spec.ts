@@ -14,7 +14,7 @@ describe('UpdateConsultantAvailableWithClient', () => {
       telephone: '9199522391932',
     };
     const consultantUpdated = await consultantUseCase.updateConsultantAvailableWithNewClient(
-      consultantAvailable._id as string,
+      consultantAvailable?._id as string,
       newClient
     );
 

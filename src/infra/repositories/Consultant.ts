@@ -47,11 +47,15 @@ class ConsultantRepository {
       return null;
     }
   }
-  async findConsultantAvailable(): Promise<Consultant> {
-    const consultantAvailable = await ConsultantModel.findOne({
-      clientCurrent: { $exists: false },
-    }).exec();
-    return consultantAvailable?.toObject();
+  async findConsultantAvailable(): Promise<Consultant | null> {
+    try {
+      const consultantAvailable = await ConsultantModel.findOne({
+        clientCurrent: { $exists: false },
+      }).exec();
+      return consultantAvailable.toObject();
+    } catch (error) {
+      return null;
+    }
   }
   async findConsultantByIdClient(idClient: string): Promise<Consultant | null> {
     try {

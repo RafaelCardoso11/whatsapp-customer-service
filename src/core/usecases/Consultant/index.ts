@@ -9,10 +9,10 @@ export class ConsultantUseCase {
     return await this.consultantRepository.getByTelephone(telephone);
   }
 
-  public async findConsultantAvailable(): Promise<Consultant> {
+  public async findConsultantAvailable(): Promise<Consultant | null> {
     const availableConsultant = await this.consultantRepository.findConsultantAvailable();
 
-    return availableConsultant;
+    return availableConsultant || null;
   }
   public async findByTelephoneClient(telephone: string): Promise<Consultant | null> {
     const consultant = await this.consultantRepository.findByTelephoneClient(telephone);

@@ -1,20 +1,9 @@
-import constants from '../../../constants';
+import { LanguageManagerSingleton } from '../../../infra/language';
 import { ConsultantRepository } from '../../../infra/repositories/Consultant';
 import { Sender } from '../../../infra/whatsapp/Sender';
 import { Consultant } from '../../entities/Consultant';
 import { ICommand } from '../Commands/interfaces/command';
 
-const {
-  attendiment: {
-    NO_CONSULTANT_AVAIABLE_FOR_CHANGE,
-    ARE_YOU_NOT_ATTENDIMENTO_FOR_CHANGE,
-    ATTENDIMENT_SEND_TO_OUTHER_CONSULTANT,
-    DO_YOU_RECEPT_TO_NEW_ATTENDIMENT,
-  },
-} = constants;
-
-const formatterConsultantSendToOutherConsultant = (consultantAvaiableName: string) =>
-  ATTENDIMENT_SEND_TO_OUTHER_CONSULTANT.replace('{consultantAvaiableName}', consultantAvaiableName);
 export class ChangeConsultantCommand implements ICommand {
   constructor(
     private readonly consultantRepository: ConsultantRepository,
@@ -30,21 +19,32 @@ export class ChangeConsultantCommand implements ICommand {
         await this.consultantRepository.updateClientCurrent(consultantAvaiable._id, consultant.clientCurrent);
         await this.sender.sendText(
           consultant.telephone,
-          formatterConsultantSendToOutherConsultant(consultantAvaiable.name)
+          LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_SEND_TO_OTHER_CONSULTANT')
         );
 
         await this.sender.sendText(
           consultant.clientCurrent.telephone,
-          `*O seu atendimento foi alterado para o consultor ${consultantAvaiable.name}*`
+          LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_CHANGED', {
+            consultantName: consultantAvaiable.name,
+          })
         );
 
-        await this.sender.sendText(consultantAvaiable.telephone, DO_YOU_RECEPT_TO_NEW_ATTENDIMENT);
+        await this.sender.sendText(
+          consultantAvaiable.telephone,
+          LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_DO_YOU_RECEIVE_NEW_ATTENDIMENT')
+        );
 
         return true;
       }
-      await this.sender.sendText(consultant.telephone, NO_CONSULTANT_AVAIABLE_FOR_CHANGE);
+      await this.sender.sendText(
+        consultant.telephone,
+        LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_NO_CONSULTANT_AVAILABLE_FOR_CHANGE')
+      );
     } else {
-      await this.sender.sendText(consultant.telephone, ARE_YOU_NOT_ATTENDIMENTO_FOR_CHANGE);
+      await this.sender.sendText(
+        consultant.telephone,
+        LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_ARE_YOU_NOT_ATTENDIMENT_FOR_CHANGE')
+      );
     }
     return false;
   }

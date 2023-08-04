@@ -1,6 +1,7 @@
 import { ECommand } from '../../../enums/ECommand';
-import { formatterCommandInvalid } from '../../../helpers/formatterCommadInvalid';
-import { formatterCommandWithSuggestion } from '../../../helpers/formatterCommandWithSuggestion';
+import { commandSuggestion } from '../../../helpers/commandSuggestion';
+
+import { LanguageManagerSingleton } from '../../../infra/language';
 import { AttendimentRepository } from '../../../infra/repositories/Attendiment';
 import { ConsultantRepository } from '../../../infra/repositories/Consultant';
 import { Sender } from '../../../infra/whatsapp/Sender';
@@ -39,12 +40,12 @@ export class CommandsUseCase {
     if (getCommand) {
       return await getCommand.execute(consultant);
     } else {
-      await this.sender.sendText(consultant.telephone, formatterCommandInvalid(command));
+      await this.sender.sendText(consultant.telephone, LanguageManagerSingleton.translate('commands:'));
 
-      const commandSuggestion = formatterCommandWithSuggestion(command, this.Commands);
+      const suggestion = commandSuggestion(command, this.Commands);
 
-      if (commandSuggestion) {
-        await this.sender.sendText(consultant.telephone, commandSuggestion);
+      if (suggestion) {
+        await this.sender.sendText(consultant.telephone, suggestion);
       }
       return false;
     }

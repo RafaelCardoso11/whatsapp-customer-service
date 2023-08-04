@@ -8,6 +8,10 @@ import ResponseEmitterSingleton from '../emitters/ResponseEmitterSingleton';
 import { ECommand } from '../../enums/ECommand';
 import { LanguageManagerSingleton } from '../language';
 
+const loggerTranslate = (constant: string, options: object) => {
+  return LanguageManagerSingleton.translate('logger:WhatsappClient.' + constant, options);
+};
+
 class WhatsappClient implements IWhatsappClient {
   constructor(private readonly dependencies: WhatsappClientDependencies) {}
 
@@ -57,7 +61,7 @@ class WhatsappClient implements IWhatsappClient {
 
       if (executed) {
         logger.info(
-          LanguageManagerSingleton.translate('logger:WhatsappClient.CONSULTANT_EXECUTING_COMMAND', {
+          loggerTranslate('CONSULTANT_EXECUTING_COMMAND', {
             consultantName: consultant.name,
             command: message.content,
           })
@@ -84,9 +88,7 @@ class WhatsappClient implements IWhatsappClient {
       sender: { telephone, name: nameSave, pushname: name },
       content,
     } = message;
-    logger.info(
-      LanguageManagerSingleton.translate('logger:WhatsappClient.NEW_MESSAGE_TO_CLIENT', { clientName: name })
-    );
+    logger.info(loggerTranslate('NEW_MESSAGE_TO_CLIENT', { clientName: name }));
     const consultorInAttendimentWithClient = await this.dependencies.consultantUseCase.findByTelephoneClient(telephone);
 
     if (consultorInAttendimentWithClient) {
@@ -110,7 +112,7 @@ class WhatsappClient implements IWhatsappClient {
       }
       await this.dependencies.queueAttendimentUseCase.saveMessageInAttendiment(telephone, content);
       logger.info(
-        LanguageManagerSingleton.translate('logger:WhatsappClient.CLIENT_WAIT_ATTENDIMENT_IN_QUEUE', {
+        loggerTranslate('CLIENT_WAIT_ATTENDIMENT_IN_QUEUE', {
           clientName: name,
         })
       );
@@ -123,7 +125,7 @@ class WhatsappClient implements IWhatsappClient {
       telephone,
     };
     logger.info(
-      LanguageManagerSingleton.translate('logger:WhatsappClient.NEW_CLIENT', {
+      loggerTranslate('NEW_CLIENT', {
         clientName: name,
       })
     );
@@ -147,7 +149,7 @@ class WhatsappClient implements IWhatsappClient {
       const isAddToQueue = await this.dependencies.queueAttendimentUseCase.add(clientCurrent, contentMessage);
       if (isAddToQueue)
         logger.info(
-          LanguageManagerSingleton.translate('logger:WhatsappClient.CLIENT_ADD_IN_QUEUE_ATTENDIMENT', {
+          loggerTranslate('CLIENT_ADD_IN_QUEUE_ATTENDIMENT', {
             clientName: name,
           })
         );

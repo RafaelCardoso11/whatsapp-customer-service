@@ -6,6 +6,7 @@ import { Consultant } from '../../core/entities/Consultant';
 import { WhatsappClientDependencies } from './ClientDependencies';
 import ResponseEmitterSingleton from '../emitters/ResponseEmitterSingleton';
 import { ECommand } from '../../enums/ECommand';
+import { LanguageManagerSingleton } from '../language';
 
 class WhatsappClient implements IWhatsappClient {
   constructor(private readonly dependencies: WhatsappClientDependencies) {}
@@ -15,7 +16,7 @@ class WhatsappClient implements IWhatsappClient {
       await this.dependencies.client.initialize(process.env.SERVER_SESSION_WS as string);
       await this.onMessage();
     } catch (error) {
-      logger.error('Error during application bootstrap', error);
+      logger.error(LanguageManagerSingleton.translate('errors:WhatsappClient.INITIALIZE', { error }));
     }
   }
   async onMessage(): Promise<void> {
@@ -40,7 +41,11 @@ class WhatsappClient implements IWhatsappClient {
     }
   }
   private async handleConsultantMessage(consultant: Consultant, message: IMessage) {
-    logger.info('NOVA MENSAGEM DO CONSULTOR - ' + consultant.name);
+    logger.info(
+      LanguageManagerSingleton.translate('logger:WhatsappClient.NEW_MESSAGE_TO_CONSULTANT', {
+        consultantName: consultant.name,
+      })
+    );
 
     const initWithCommand = /^#\//;
     const isCommand = initWithCommand.test(message.content);
@@ -51,7 +56,12 @@ class WhatsappClient implements IWhatsappClient {
       const executed = await this.dependencies.commandsUseCase.executeCommand(consultant, message.content);
 
       if (executed) {
-        logger.info(`CONSULTOR ${consultant.name.toUpperCase()} EXECUTOU O COMANDO: ` + message.content);
+        logger.info(
+          LanguageManagerSingleton.translate('logger:WhatsappClient.CONSULTANT_EXECUTING_COMMAND', {
+            consultantName: consultant.name,
+            command: message.content,
+          })
+        );
         switch (message.content) {
           case ECommand.CloseSession:
             this.dependencies.queueAttendimentUseCase.removeQueueAttendimentAndRemoveClientCurrent(consultant._id);
@@ -74,7 +84,9 @@ class WhatsappClient implements IWhatsappClient {
       sender: { telephone, name: nameSave, pushname: name },
       content,
     } = message;
-    logger.info('NOVA MENSAGEM DO CLIENT - ' + name);
+    logger.info(
+      LanguageManagerSingleton.translate('logger:WhatsappClient.NEW_MESSAGE_TO_CLIENT', { clientName: name })
+    );
     const consultorInAttendimentWithClient = await this.dependencies.consultantUseCase.findByTelephoneClient(telephone);
 
     if (consultorInAttendimentWithClient) {
@@ -97,7 +109,11 @@ class WhatsappClient implements IWhatsappClient {
         await this.handleNewClientMessage(nameSave, name, telephone, content);
       }
       await this.dependencies.queueAttendimentUseCase.saveMessageInAttendiment(telephone, content);
-      logger.info(`CLIENTE ${name} AGUARDANDO ATENDIMENTO NA FILA`);
+      logger.info(
+        LanguageManagerSingleton.translate('logger:WhatsappClient.CLIENT_WAIT_ATTENDIMENT_IN_QUEUE', {
+          clientName: name,
+        })
+      );
     }
   }
   private async handleNewClientMessage(nameSave: string, name: string, telephone: string, contentMessage: string) {
@@ -106,7 +122,11 @@ class WhatsappClient implements IWhatsappClient {
       name,
       telephone,
     };
-    logger.info('NOVO CLIENTE - ' + name);
+    logger.info(
+      LanguageManagerSingleton.translate('logger:WhatsappClient.NEW_CLIENT', {
+        clientName: name,
+      })
+    );
     const consultantAvaiable = await this.dependencies.consultantUseCase.findConsultantAvailable();
 
     if (consultantAvaiable) {
@@ -125,7 +145,12 @@ class WhatsappClient implements IWhatsappClient {
       );
     } else {
       const isAddToQueue = await this.dependencies.queueAttendimentUseCase.add(clientCurrent, contentMessage);
-      if (isAddToQueue) logger.info(`CLIENT ${name} ADICIONADO NA FILA DE ATENDIMENTO`);
+      if (isAddToQueue)
+        logger.info(
+          LanguageManagerSingleton.translate('logger:WhatsappClient.CLIENT_ADD_IN_QUEUE_ATTENDIMENT', {
+            clientName: name,
+          })
+        );
     }
   }
 }

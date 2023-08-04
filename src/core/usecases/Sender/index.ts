@@ -1,8 +1,5 @@
-import constants from '../../../constants';
 import { ESenderType } from '../../../enums/ESenderType';
-import { formatterMessageToClient } from '../../../helpers/formatterMessageToClient';
-import { formatterMessageToConsultant } from '../../../helpers/formatterMessageToConsultant';
-import { formattedMessageNewClient } from '../../../helpers/formatterMessagemToConsultantForNewClient';
+import { LanguageManagerSingleton } from '../../../infra/language';
 import { Sender } from '../../../infra/whatsapp/Sender';
 import { Client } from '../../entities/Client';
 
@@ -14,11 +11,17 @@ export class SenderUseCase {
   }
 
   public async newAttendiment(clientTelephone: string): Promise<boolean> {
-    const { MESSAGE_TO_ACCELERATE_ATTENDANCE, MESSAGE_WAIT_FOR_CONSULTANT } = constants.sucess_to_whatsapp;
-
     try {
-      await this.send(ESenderType.TEXT, clientTelephone, MESSAGE_WAIT_FOR_CONSULTANT);
-      await this.send(ESenderType.TEXT, clientTelephone, MESSAGE_TO_ACCELERATE_ATTENDANCE);
+      await this.send(
+        ESenderType.TEXT,
+        clientTelephone,
+        LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_MESSAGE_WAIT_FOR_CONSULTANT')
+      );
+      await this.send(
+        ESenderType.TEXT,
+        clientTelephone,
+        LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_MESSAGE_TO_ACCELERATE_ATTENDANCE')
+      );
       return true;
     } catch (error) {
       return false;
@@ -26,13 +29,21 @@ export class SenderUseCase {
   }
 
   public async sendFormattedMessageToConsultant(
-    client: Client,
+    { name: nameClient, nameSave: nameSaveClient }: Client,
     messageContent: string,
     consultantTelephone: string
   ): Promise<unknown> {
-    const formattedMessage = formatterMessageToConsultant(client, messageContent);
-
-    return await this.send(ESenderType.TEXT, consultantTelephone, formattedMessage);
+    const dateCurrent = new Date();
+    return await this.send(
+      ESenderType.TEXT,
+      consultantTelephone,
+      LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_MESSAGE_WITH_INFO_CLIENT', {
+        nameSaveClient,
+        nameClient,
+        dateCurrent,
+        messageContent,
+      })
+    );
   }
 
   public async sendFormattedMessageToClient(
@@ -40,13 +51,23 @@ export class SenderUseCase {
     consultantName: string,
     messageContent: string
   ): Promise<unknown> {
-    const formattedMessage = formatterMessageToClient(consultantName, messageContent);
-
-    return await this.send(ESenderType.TEXT, clientTelephone, formattedMessage);
+    return await this.send(
+      ESenderType.TEXT,
+      clientTelephone,
+      LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT', {
+        consultantName,
+        messageContent,
+      })
+    );
   }
 
   public async sendFormattedMessageToConsultantForNewClient(telephone: string, clientName: string): Promise<unknown> {
-    const messageNewClientToConsultant = formattedMessageNewClient(clientName);
+    const messageNewClientToConsultant = LanguageManagerSingleton.translate(
+      'attendiment:ATTENDIMENT_NEW_CLIENT_FOR_CONSULTANT',
+      {
+        clientName,
+      }
+    );
     return await this.send(ESenderType.TEXT, telephone, messageNewClientToConsultant);
   }
 }

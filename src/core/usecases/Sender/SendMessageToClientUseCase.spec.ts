@@ -1,10 +1,10 @@
-import constants from '../../../constants';
 import { Sender } from '../../../infra/whatsapp/Sender';
 import { Client } from '../../entities/Client';
 import { Consultant } from '../../entities/Consultant';
-import { formatterMessageToClient } from '../../../helpers/formatterMessageToClient';
+
 import { WhatsappClientMemoryFactory } from '../../../infra/whatsapp/ClientMemoryFactory';
 import { SenderUseCase } from '.';
+import { LanguageManagerSingleton } from '../../../infra/language';
 
 describe('SendMessageToClientUseCase', () => {
   let sender: Sender;
@@ -37,9 +37,13 @@ describe('SendMessageToClientUseCase', () => {
       message
     );
 
-    const messageWithNameClient = formatterMessageToClient(consultant.name, message);
-
-    expect(messageToClient).toEqual({ to: client.telephone, content: messageWithNameClient });
+    expect(messageToClient).toEqual({
+      to: client.telephone,
+      content: LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT', {
+        consultantName: consultant.name,
+        messageContent: message,
+      }),
+    });
   });
   it('should send two messages to the client. One waiting for a consultant and outher asking for information to speed up customer service', async () => {
     const senderSpy = jest.spyOn(sender, 'sendText');
@@ -48,11 +52,15 @@ describe('SendMessageToClientUseCase', () => {
 
     const sended = await senderUseCase.newAttendiment(client.telephone);
 
-    const { MESSAGE_WAIT_FOR_CONSULTANT, MESSAGE_TO_ACCELERATE_ATTENDANCE } = constants.sucess_to_whatsapp;
-
     expect(senderSpy).toBeCalledTimes(2);
-    expect(senderSpy).toHaveBeenCalledWith(client.telephone, MESSAGE_WAIT_FOR_CONSULTANT);
-    expect(senderSpy).toHaveBeenCalledWith(client.telephone, MESSAGE_TO_ACCELERATE_ATTENDANCE);
+    expect(senderSpy).toHaveBeenCalledWith(
+      client.telephone,
+      LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_MESSAGE_WAIT_FOR_CONSULTANT')
+    );
+    expect(senderSpy).toHaveBeenCalledWith(
+      client.telephone,
+      LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_MESSAGE_TO_ACCELERATE_ATTENDANCE')
+    );
     expect(sended).toBeTruthy();
   });
 });

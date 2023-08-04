@@ -1,6 +1,11 @@
 {
     "WhatsappClient": {
         "INITIALIZE": "Erro durante a inicialização do WhatsappClient. Erro: {{error}}"
+    },
+    "Sender": {
+        "MESSAGE_TYPE_IS_NOT_SUPPORTED": "Erro. O Tipo de mensagem não é suportado."
     }
+
+   
    
 }

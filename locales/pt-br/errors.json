@@ -1,0 +1,6 @@
+{
+    "WhatsappClient": {
+        "INITIALIZE": "Erro durante a inicialização do WhatsappClient. Erro: {{error}}"
+    }
+   
+}

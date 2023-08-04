@@ -1,0 +1,10 @@
+{
+    "WhatsappClient": {
+        "NEW_MESSAGE_TO_CONSULTANT": "NOVA MENSAGEM DO CONSULTOR - {{consultantName}}",
+        "CLIENT_WAIT_ATTENDIMENT_IN_QUEUE": "CLIENTE {{clientName}} AGUARDANDO ATENDIMENTO NA FILA",
+        "CLIENT_ADD_IN_QUEUE_ATTENDIMENT": "CLIENTE {{clientName}} ADICIONADO NA FILA DE ATENDIMENTO",
+        "CONSULTANT_EXECUTING_COMMAND": "CONSULTOR {{consultantName}} EXECUTOU O COMANDO {{- command}}",
+        "NEW_MESSAGE_TO_CLIENT": "NOVA MENSAGEM DO CLIENTE - {{clientName}}", 
+        "NEW_CLIENT": "NOVO CLIENTE - {{clientName}}"
+    }
+}

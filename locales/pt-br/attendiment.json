@@ -1,6 +1,24 @@
 {
-  "NO_CONSULTANT_AVAIABLE_FOR_CHANGE": " `Nenhum consultor disponível para que seja trocado`",
-  "ARE_YOU_NOT_ATTENDIMENTO_FOR_CHANGE": " 'Você não está em um atendimento para troca-lo!'",
-  "ATTENDIMENT_SEND_TO_OUTHER_CONSULTANT": " '*O atendimento foi enviado para o Consultor {consultantAvaiableName}*'",
-  "DO_YOU_RECEPT_TO_NEW_ATTENDIMENT": " '*Você recebeu um novo atendimento de um outro Consultor.*'"
+  "ATTENDIMENT_YOU_NOT_ARE_ATTENDIMENT": "Você não está em um atendimento.",
+  "ATTENDIMENT_FINALIZED": "_Atendimento encerrado!_",
+ 
+  "ATTENDIMENT_MESSAGE_WAIT_FOR_CONSULTANT": "Olá, tudo bem? 😊\nEm breve você será atendido por um de nossos consultores.",
+  "ATTENDIMENT_MESSAGE_TO_ACCELERATE_ATTENDANCE": "Para agilizar o nosso atendimento, informe o seu nome e dúvida/pedido que já retornaremos.",
+  "ATTENDIMENT_NEW_CLIENT_FOR_CONSULTANT": "ATENÇÃO: Novo atendimento.\nSeja cordial com 😊 {{clientName}}, ele(a) está te esperando.",
+ 
+  "ATTENDIMENT_MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT": "Consultor {{consultantName}}\n{{messageContent}}",
+  "ATTENDIMENT_MESSAGE_WITH_INFO_CLIENT": "Nome: {{nameSaveClient}} / {{nameClient}}\nData/Hora: {{dateCurrent}}\nMensagem: {{messageContent}}",
+  "failure": {
+    "ATTENDIMENT_FAILED_NO_AVAILABLE_CONSULTANT": "Erro ao tentar encontrar um consultor disponível.",
+    "ATTENDIMENT_FAILED_CONSULTANT_NOT_FOUND": "Consultor não encontrado.",
+    "ATTENDIMENT_FAILED_TO_CREATE_CONSULTANT": "Erro ao tentar criar um consultor.",
+    "ATTENDIMENT_FAILED_TO_UPDATED_CONSULTANT": "Erro ao atualizar o consultor.",
+    "ATTENDIMENT_FAILED_TO_REGISTER_CLIENT_FOR_CONSULTANT": "Erro ao cadastrar o cliente no consultor.",
+    "ATTENDIMENT_FAILED_TO_FIND_BY_ID": "Erro ao tentar encontrar um consultor pelo ID.",
+    "ATTENDIMENT_FAILED_TO_FIND_BY_ID_CLIENT": "Erro ao tentar encontrar um consultor pelo ID do cliente.",
+    "ATTENDIMENT_FAILED_TO_FIND_BY_TELEPHONE": "Erro ao tentar encontrar um consultor pelo telefone.",
+    "ATTENDIMENT_FAILED_TO_GET_ALL": "Erro ao tentar buscar todos os consultores.",
+    "ATTENDIMENT_FAILED_TO_UPDATED_CLIENT_CURRENT": "Erro ao tentar atualizar o cliente atual do consultor.",
+    "ATTENDIMENT_FAILED_TO_SENDER_MESSAGE": "Erro ao enviar a mensagem. Erro desconhecido."
+  }
 }

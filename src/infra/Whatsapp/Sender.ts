@@ -1,5 +1,7 @@
 import { IWhatsappSender } from '../../adapters/interfaces/whatsappSender';
 import { ESenderType } from '../../enums/ESenderType';
+import { LanguageManagerSingleton } from '../language';
+import { logger } from '../logger/logger';
 
 export class Sender implements IWhatsappSender {
   constructor(private senderAdapter: IWhatsappSender) {}
@@ -15,7 +17,7 @@ export class Sender implements IWhatsappSender {
       case ESenderType.STICKER:
         return await this.sendSticker(to, content);
       default:
-        throw new Error('The message type is not supported');
+        logger.error(LanguageManagerSingleton.translate('errors:Sender.MESSAGE_TYPE_IS_NOT_SUPPORTED'));
     }
   }
   async sendImage(to: string, content: string): Promise<object> {

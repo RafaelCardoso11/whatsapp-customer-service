@@ -4,8 +4,7 @@ class Client {
   nameSave?: string;
   telephone: string;
 
-  constructor(id: string, name: string, telephone: string) {
-    this._id = id;
+  constructor(name: string, telephone: string) {
     this.name = name;
     this.telephone = telephone;
   }

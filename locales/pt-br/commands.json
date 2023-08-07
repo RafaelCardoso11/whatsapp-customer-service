@@ -1,6 +1,6 @@
 {
-  "COMMAND_INVALID": "*Comando não reconhecido: {command}.* _Veja todos os comandos em #/comandos_",
-  "COMMAND_SUGGESTION": "_Você quis dizer *{{commandSuggestion}}*_?",
+  "COMMAND_INVALID": "*Comando não reconhecido: {{- command}}.* _Veja todos os comandos em #/comandos_",
+  "COMMAND_SUGGESTION": "_Você quis dizer *{{- commandSuggestion}}*_?",
   "changeConsultant": {
     "ATTENDIMENT_NO_CONSULTANT_AVAILABLE_FOR_CHANGE": "Nenhum consultor disponível para troca.",
     "ATTENDIMENT_ARE_YOU_NOT_ATTENDIMENT_FOR_CHANGE": "Você não está em um atendimento para trocá-lo.",

@@ -6,8 +6,8 @@
   "ATTENDIMENT_MESSAGE_TO_ACCELERATE_ATTENDANCE": "Para agilizar o nosso atendimento, informe o seu nome e dúvida/pedido que já retornaremos.",
   "ATTENDIMENT_NEW_CLIENT_FOR_CONSULTANT": "ATENÇÃO: Novo atendimento.\nSeja cordial com 😊 {{clientName}}, ele(a) está te esperando.",
  
-  "ATTENDIMENT_MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT": "Consultor {{consultantName}}\n{{messageContent}}",
-  "ATTENDIMENT_MESSAGE_WITH_INFO_CLIENT": "Nome: {{nameSaveClient}} / {{nameClient}}\nData/Hora: {{dateCurrent}}\nMensagem: {{messageContent}}",
+  "ATTENDIMENT_MESSAGE_WITH_NAME_CONSULTANT_AND_CONTENT": "Consultor *{{consultantName}}*\n{{- messageContent}}",
+  "ATTENDIMENT_MESSAGE_WITH_INFO_CLIENT": "Nome: {{nameSaveClient}} / {{nameClient}}\nData/Hora: {{dateCurrent}}\nMensagem: {{- messageContent}}",
   "failure": {
     "ATTENDIMENT_FAILED_NO_AVAILABLE_CONSULTANT": "Erro ao tentar encontrar um consultor disponível.",
     "ATTENDIMENT_FAILED_CONSULTANT_NOT_FOUND": "Consultor não encontrado.",

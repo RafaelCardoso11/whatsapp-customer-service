@@ -18,7 +18,7 @@ describe('SendMessageToConsultantUseCase', () => {
   });
 
   it('should send message text formatted to consultant with(name, nameSave, dateCurrent, content)', async () => {
-    const client = new Client('1', 'Rafael', '9196320038');
+    const client = new Client('Rafael', '9196320038');
     client.nameSave = 'Rafael Cliente';
 
     const consultant: Consultant = {

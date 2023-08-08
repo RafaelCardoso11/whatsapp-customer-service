@@ -48,7 +48,7 @@ describe('SendMessageToClientUseCase', () => {
   it('should send two messages to the client. One waiting for a consultant and outher asking for information to speed up customer service', async () => {
     const senderSpy = jest.spyOn(sender, 'sendText');
 
-    const client = new Client('1', 'Rafael', '9196320038');
+    const client = new Client('Rafael', '9196320038');
 
     const sended = await senderUseCase.newAttendiment(client.telephone);
 

@@ -109,13 +109,14 @@ class WhatsappClient implements IWhatsappClient {
       if (!clientInQueueAttendiment) {
         await this.dependencies.senderUseCase.newAttendiment(telephone);
         await this.handleNewClientMessage(nameSave, name, telephone, content);
+      } else {
+        await this.dependencies.queueAttendimentUseCase.saveMessageInAttendiment(telephone, content);
+        logger.info(
+          loggerTranslate('CLIENT_WAIT_ATTENDIMENT_IN_QUEUE', {
+            clientName: name,
+          })
+        );
       }
-      await this.dependencies.queueAttendimentUseCase.saveMessageInAttendiment(telephone, content);
-      logger.info(
-        loggerTranslate('CLIENT_WAIT_ATTENDIMENT_IN_QUEUE', {
-          clientName: name,
-        })
-      );
     }
   }
   private async handleNewClientMessage(nameSave: string, name: string, telephone: string, contentMessage: string) {

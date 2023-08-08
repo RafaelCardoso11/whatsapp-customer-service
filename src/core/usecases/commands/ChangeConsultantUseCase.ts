@@ -4,6 +4,10 @@ import { Sender } from '../../../infra/whatsapp/Sender';
 import { Consultant } from '../../entities/Consultant';
 import { ICommand } from '../Commands/interfaces/command';
 
+const commandTranslate = (constant: string, options?: object) => {
+  return LanguageManagerSingleton.translate('commands:changeConsultant.' + constant, options);
+};
+
 export class ChangeConsultantCommand implements ICommand {
   constructor(
     private readonly consultantRepository: ConsultantRepository,
@@ -19,31 +23,33 @@ export class ChangeConsultantCommand implements ICommand {
         await this.consultantRepository.updateClientCurrent(consultantAvaiable._id, consultant.clientCurrent);
         await this.sender.sendText(
           consultant.telephone,
-          LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_SEND_TO_OTHER_CONSULTANT')
+          commandTranslate('ATTENDIMENT_SEND_TO_OTHER_CONSULTANT', {
+            consultantAvaiableName: consultantAvaiable.name,
+          })
         );
 
         await this.sender.sendText(
           consultant.clientCurrent.telephone,
-          LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_CHANGED', {
+          commandTranslate('ATTENDIMENT_CHANGED', {
             consultantName: consultantAvaiable.name,
           })
         );
 
         await this.sender.sendText(
           consultantAvaiable.telephone,
-          LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_DO_YOU_RECEIVE_NEW_ATTENDIMENT')
+          commandTranslate('ATTENDIMENT_DO_YOU_RECEIVE_NEW_ATTENDIMENT')
         );
 
         return true;
       }
       await this.sender.sendText(
         consultant.telephone,
-        LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_NO_CONSULTANT_AVAILABLE_FOR_CHANGE')
+        commandTranslate('ATTENDIMENT_NO_CONSULTANT_AVAILABLE_FOR_CHANGE')
       );
     } else {
       await this.sender.sendText(
         consultant.telephone,
-        LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_ARE_YOU_NOT_ATTENDIMENT_FOR_CHANGE')
+        commandTranslate('ATTENDIMENT_ARE_YOU_NOT_ATTENDIMENT_FOR_CHANGE')
       );
     }
     return false;

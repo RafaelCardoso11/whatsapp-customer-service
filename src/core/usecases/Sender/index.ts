@@ -40,7 +40,7 @@ export class SenderUseCase {
       LanguageManagerSingleton.translate('attendiment:ATTENDIMENT_MESSAGE_WITH_INFO_CLIENT', {
         nameSaveClient,
         nameClient,
-        dateCurrent,
+        dateCurrent: dateCurrent.toLocaleDateString(),
         messageContent,
       })
     );

@@ -6,6 +6,6 @@
     "ATTENDIMENT_ARE_YOU_NOT_ATTENDIMENT_FOR_CHANGE": "Você não está em um atendimento para trocá-lo.",
     "ATTENDIMENT_SEND_TO_OTHER_CONSULTANT": "O atendimento foi enviado para o Consultor {{consultantAvaiableName}}.",
     "ATTENDIMENT_DO_YOU_RECEIVE_NEW_ATTENDIMENT": "Você recebeu um novo atendimento de outro Consultor.",
-    "ATTENDIMENT_CHANGED": "*O seu atendimento foi alterado para o consultor {{consultantName}*"
+    "ATTENDIMENT_CHANGED": "*O seu atendimento foi alterado para o consultor {{consultantName}}*"
   }
 }
